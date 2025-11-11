@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hackathon 2026 | NIT Silchar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#0D0D2B',
+                        'secondary': '#25284B',
+                        'accent': '#3671E9',
+                        'highlight': '#EB4A94',
+                        'light': '#F8F9FA',
+                        'dark-text': '#E0E0E0',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                        'glow': 'glow 2s ease-in-out infinite alternate'
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        glow: {
+                            'from': { textShadow: '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #3671E9, 0 0 20px #3671E9' },
+                            'to': { textShadow: '0 0 10px #fff, 0 0 15px #fff, 0 0 20px #EB4A94, 0 0 25px #EB4A94' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.4",
+    "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.8/+esm"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-light dark:bg-primary text-gray-800 dark:text-dark-text">
+    <div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
