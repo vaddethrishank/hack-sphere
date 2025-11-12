@@ -1,4 +1,11 @@
-// This file is deprecated. The app now uses mock data instead of Supabase.
-// This file is kept to prevent build errors from any remaining imports, but it no longer provides a functional client.
+import { createClient } from '@supabase/supabase-js';
 
-export const supabase = null;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error('Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in environment');
+}
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
