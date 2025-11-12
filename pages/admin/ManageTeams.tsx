@@ -1,9 +1,79 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useAuth } from '../../hooks/useAuth';
 import { Team } from '../../types';
+import { supabase } from '../../lib/supabaseClient';
 
 const TeamCard: React.FC<{ team: Team }> = ({ team }) => {
     const { approveTeam, rejectTeam } = useAuth();
+
+    const ScreenshotPreview: React.FC<{ path: string }> = ({ path }) => {
+        const [imageUrl, setImageUrl] = useState<string | null>(null);
+        const [loading, setLoading] = useState(true);
+        const [showModal, setShowModal] = useState(false);
+
+        useEffect(() => {
+            const loadImage = async () => {
+                try {
+                    // If path already looks like a full URL, use it directly
+                    if (path.startsWith('http')) {
+                        setImageUrl(path);
+                        setLoading(false);
+                        return;
+                    }
+
+                    // Otherwise treat it as storage path and ask Supabase for a signed URL
+                    const res = await supabase.storage.from('payments').createSignedUrl(path, 60 * 60);
+                    const signed = (res as any).data?.signedUrl || (res as any).data?.signedURL;
+                    if (signed) {
+                        setImageUrl(signed);
+                    } else {
+                        // fallback to public url
+                        const pub = supabase.storage.from('payments').getPublicUrl(path) as any;
+                        const pubUrl = pub?.data?.publicUrl;
+                        if (pubUrl) setImageUrl(pubUrl);
+                    }
+                } catch (e) {
+                    console.error('Failed to load screenshot', e);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            loadImage();
+        }, [path]);
+
+        if (loading) {
+            return <div className="w-20 h-20 bg-gray-700 rounded animate-pulse" />;
+        }
+
+        if (!imageUrl) {
+            return <p className="text-sm text-yellow-400">Failed to load</p>;
+        }
+
+        return (
+            <>
+                <img 
+                    src={imageUrl} 
+                    alt="Payment Screenshot" 
+                    onClick={() => setShowModal(true)}
+                    className="w-24 h-24 object-cover rounded cursor-pointer hover:opacity-80 transition-opacity border border-gray-600"
+                />
+                {showModal && (
+                    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4" onClick={() => setShowModal(false)}>
+                        <div className="relative max-w-2xl max-h-[90vh]" onClick={e => e.stopPropagation()}>
+                            <img src={imageUrl} alt="Payment Screenshot" className="max-w-full max-h-[90vh] rounded-lg" />
+                            <button 
+                                onClick={() => setShowModal(false)}
+                                className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-8 h-8 flex items-center justify-center"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </>
+        );
+    };
 
     const getStatusClasses = (status: Team['status']) => {
         switch (status) {
@@ -47,16 +117,9 @@ const TeamCard: React.FC<{ team: Team }> = ({ team }) => {
                 </ul>
                  <div className="mt-4 pt-4 border-t border-primary/50 flex justify-between items-center">
                     <div>
-                        <h4 className="font-semibold text-white mb-2">Payment Status:</h4>
+                        <h4 className="font-semibold text-white mb-2">Payment Screenshot:</h4>
                         {team.paymentScreenshotUrl ? (
-                            <a 
-                                href={team.paymentScreenshotUrl} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                className="text-sm bg-blue-600 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded transition-colors"
-                            >
-                                View Screenshot
-                            </a>
+                            <ScreenshotPreview path={team.paymentScreenshotUrl} />
                         ) : (
                             <p className="text-sm text-yellow-400">Screenshot Not Provided</p>
                         )}

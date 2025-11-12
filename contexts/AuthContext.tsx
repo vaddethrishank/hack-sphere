@@ -19,15 +19,32 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         try {
             const { data, error } = await supabase.from('teams').select('*');
             if (!error && data) {
-                // Map DB rows to Team type
+                // Fetch team members in bulk
+                const teamIds = data.map((t: any) => t.id);
+                let membersByTeam: Record<string, any[]> = {};
+                try {
+                    const { data: membersData, error: memErr } = await supabase.from('team_members').select('*').in('team_id', teamIds);
+                    if (!memErr && membersData) {
+                        membersByTeam = membersData.reduce((acc: Record<string, any[]>, m: any) => {
+                            acc[m.team_id] = acc[m.team_id] || [];
+                            acc[m.team_id].push({ id: m.id, name: m.name, email: m.email, role: m.role });
+                            return acc;
+                        }, {} as Record<string, any[]>);
+                    }
+                } catch (e) {
+                    console.warn('Failed to load team members', e);
+                }
+
+                // Map DB rows to Team type (screenshot URLs are already public, stored directly from upload)
                 const mapped: Team[] = data.map((t: any) => ({
                     id: t.id,
                     name: t.name,
                     college: t.college,
-                    members: [], // team_members handled separately when needed
+                    members: membersByTeam[t.id] || [],
                     paymentScreenshotUrl: t.payment_screenshot_url || null,
                     status: t.status,
-                }));
+                }) as Team);
+
                 setTeams(mapped);
                 return;
             }
@@ -39,6 +56,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     useEffect(() => {
         let authListener: { data: { subscription: any } } | null = null;
+        let teamsChannel: any = null;
+        let usersChannel: any = null;
 
         const init = async () => {
             // Load existing session
@@ -66,6 +85,44 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             // Load teams
             await loadTeams();
 
+            // Subscribe to realtime changes on teams and team_members so admin sees pending teams live
+            try {
+                teamsChannel = supabase.channel('public:teams')
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'teams' }, () => {
+                        loadTeams();
+                    })
+                    .on('postgres_changes', { event: '*', schema: 'public', table: 'team_members' }, () => {
+                        loadTeams();
+                    })
+                    .subscribe();
+            } catch (e) {
+                console.warn('Failed to subscribe to realtime team updates', e);
+            }
+
+            // Subscribe to realtime changes on users table so approved users see status updates immediately
+            try {
+                usersChannel = supabase.channel('public:users')
+                    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'users' }, (payload: any) => {
+                        // If current user is updated, refresh their profile
+                        if (user && payload.new.id === user.id) {
+                            const updated: User = {
+                                id: payload.new.id,
+                                name: payload.new.name,
+                                email: payload.new.email,
+                                role: payload.new.role as UserRole,
+                                teamId: payload.new.team_id || undefined,
+                            };
+                            setUser(updated);
+                            localStorage.setItem('hackathon-user', JSON.stringify(updated));
+                        }
+                        // Always reload teams to reflect any changes
+                        loadTeams();
+                    })
+                    .subscribe();
+            } catch (e) {
+                console.warn('Failed to subscribe to realtime user updates', e);
+            }
+
             setLoading(false);
         };
 
@@ -74,6 +131,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         return () => {
             if (authListener && authListener.data && authListener.data.subscription) {
                 authListener.data.subscription.unsubscribe();
+            }
+            if (teamsChannel && typeof teamsChannel.unsubscribe === 'function') {
+                try { teamsChannel.unsubscribe(); } catch (e) { /* ignore */ }
+            }
+            if (usersChannel && typeof usersChannel.unsubscribe === 'function') {
+                try { usersChannel.unsubscribe(); } catch (e) { /* ignore */ }
             }
         };
     }, []);
@@ -94,8 +157,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 return profileUser;
             }
             // If no profile found, create a basic one using auth user metadata
-            const { data: authUserResp } = await supabase.auth.getUser();
-            const authUser = authUserResp?.data.user;
+            const { data: authUserData } = await supabase.auth.getUser();
+            const authUser = authUserData?.user ?? null;
             const email = authUser?.email ?? '';
             const name = (authUser?.user_metadata as any)?.name ?? '';
             const newProfile = {
@@ -173,32 +236,53 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         if (!user) throw new Error("You must be logged in to register a team.");
         if (user.teamId) throw new Error("You are already part of a team.");
 
-        // Upload payment screenshot to Supabase storage (optional)
+        // Upload payment screenshot to Supabase storage
         let screenshotUrl: string | null = null;
         try {
             const fileName = `payment-${Date.now()}-${paymentScreenshot.name}`;
             const upload = await supabase.storage.from('payments').upload(fileName, paymentScreenshot);
             if (upload.error) {
-                console.warn('Failed to upload screenshot', upload.error);
-            } else {
-                const { data } = supabase.storage.from('payments').getPublicUrl(fileName);
-                screenshotUrl = data.publicUrl;
+                console.error('Failed to upload screenshot', upload.error);
+                // Surface upload error so UI shows meaningful message
+                throw new Error('Failed to upload screenshot: ' + (upload.error.message || JSON.stringify(upload.error)));
             }
+            
+            // After upload, get and store the public URL directly in DB
+            const pub = supabase.storage.from('payments').getPublicUrl(fileName) as any;
+            const publicUrl = pub?.data?.publicUrl;
+            if (!publicUrl) {
+                throw new Error('Failed to get public URL for uploaded screenshot');
+            }
+            screenshotUrl = publicUrl;
         } catch (e) {
-            console.warn('Error uploading screenshot', e);
+            console.error('Error uploading screenshot', e);
+            throw e;
         }
 
         const newTeamId = `team-${Date.now()}`;
+        // Store the public URL directly in teams table
         const { error } = await supabase.from('teams').insert({ id: newTeamId, name: teamName, college, payment_screenshot_url: screenshotUrl, status: 'Pending' });
-        if (error) throw error;
-
-        // Insert team members
-        for (const m of members) {
-            await supabase.from('team_members').insert({ team_id: newTeamId, name: m.name, email: m.email, role: m.role });
+        if (error) throw error;        // Insert team members
+        const memberInserts = members.map(m => ({ team_id: newTeamId, name: m.name, email: m.email, role: m.role }));
+        const { error: membersError } = await supabase.from('team_members').insert(memberInserts);
+        if (membersError) {
+            console.warn('Failed to insert team members', membersError);
         }
 
         // Update user profile to be team leader
         await supabase.from('users').update({ role: UserRole.TEAM_LEADER, team_id: newTeamId }).eq('id', user.id);
+
+        // Also, if some team members already have user profiles (registered users), assign their team_id and role
+        const memberEmails = members.map(m => m.email).filter(Boolean);
+        if (memberEmails.length > 0) {
+            const { error: updateMembersError } = await supabase
+                .from('users')
+                .update({ role: UserRole.TEAM_MEMBER, team_id: newTeamId })
+                .in('email', memberEmails);
+            if (updateMembersError) {
+                console.warn('Failed to update existing users with team id', updateMembersError);
+            }
+        }
 
         const updatedUser = { ...user, role: UserRole.TEAM_LEADER, teamId: newTeamId };
         setUser(updatedUser);
@@ -211,12 +295,55 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     const approveTeam = async (teamId: string) => {
-        await supabase.from('teams').update({ status: 'Approved' }).eq('id', teamId);
+        // Mark team as approved
+        const { error } = await supabase.from('teams').update({ status: 'Approved' }).eq('id', teamId);
+        if (error) throw error;
+
+        // Fetch team members and update their user profiles (if they exist)
+        const { data: members, error: membersErr } = await supabase.from('team_members').select('email, role').eq('team_id', teamId);
+        if (membersErr) {
+            console.warn('Failed to fetch team members for approval', membersErr);
+        } else if (members && members.length > 0) {
+            const emails = members.map((m: any) => m.email).filter(Boolean);
+            if (emails.length > 0) {
+                const { error: updErr } = await supabase.from('users').update({ team_id: teamId, role: UserRole.TEAM_MEMBER }).in('email', emails);
+                if (updErr) console.warn('Failed to update users on team approval', updErr);
+            }
+
+            // If a leader is present in team_members, make sure leader role is set
+            const leader = members.find((m: any) => m.role === 'Leader');
+            if (leader && leader.email) {
+                const { error: leaderErr } = await supabase.from('users').update({ role: UserRole.TEAM_LEADER, team_id: teamId }).eq('email', leader.email);
+                if (leaderErr) console.warn('Failed to update leader role on approval', leaderErr);
+            }
+        }
+
+        // If current user is part of this team, refresh their profile in context
+        if (user?.teamId === teamId) {
+            try {
+                const { data } = await supabase.from('users').select('*').eq('id', user.id).single();
+                if (data) {
+                    const refreshed: User = { id: data.id, name: data.name, email: data.email, role: data.role as UserRole, teamId: data.team_id || undefined };
+                    setUser(refreshed);
+                    localStorage.setItem('hackathon-user', JSON.stringify(refreshed));
+                }
+            } catch (e) {
+                console.warn('Failed to refresh current user after team approval', e);
+            }
+        }
+
         await loadTeams();
     };
 
     const rejectTeam = async (teamId:string) => {
-        await supabase.from('teams').update({ status: 'Rejected' }).eq('id', teamId);
+        // Mark team as rejected
+        const { error } = await supabase.from('teams').update({ status: 'Rejected' }).eq('id', teamId);
+        if (error) throw error;
+
+        // Remove team assignment from any users who were assigned this team
+        const { error: updErr } = await supabase.from('users').update({ team_id: null, role: UserRole.GUEST }).eq('team_id', teamId);
+        if (updErr) console.warn('Failed to clear user team assignments on rejection', updErr);
+
         await loadTeams();
     };
 

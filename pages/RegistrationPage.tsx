@@ -47,6 +47,20 @@ const RegistrationPage: React.FC = () => {
         }
     };
 
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!paymentScreenshot) {
+            setPreviewUrl(null);
+            return;
+        }
+        const url = URL.createObjectURL(paymentScreenshot);
+        setPreviewUrl(url);
+        return () => {
+            URL.revokeObjectURL(url);
+        };
+    }, [paymentScreenshot]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
@@ -157,6 +171,12 @@ const RegistrationPage: React.FC = () => {
                                 accept="image/*"
                                 className="w-full text-sm text-dark-text file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-white hover:file:bg-accent/80 cursor-pointer"
                             />
+                            {previewUrl && (
+                                <div className="mt-4 text-center">
+                                    <p className="text-sm text-gray-400 mb-2">Preview</p>
+                                    <img src={previewUrl} alt="payment preview" className="mx-auto max-h-48 rounded-md shadow-md" />
+                                </div>
+                            )}
                         </div>
                     </div>
 
