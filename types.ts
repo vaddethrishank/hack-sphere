@@ -74,6 +74,7 @@ export type RoundStatus = 'Not Started' | 'Active' | 'Finished' | 'Locked';
 export interface Round {
     id: number;
     name: string;
+    startedAt?: string;
     status: RoundStatus;
     durationInMinutes?: number;
 }

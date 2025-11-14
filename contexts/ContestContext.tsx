@@ -18,9 +18,20 @@ export const ContestProvider: React.FC<ContestProviderProps> = ({ children }) =>
     const [round2Problem, setRound2Problem] = useState<Round2Problem>(mockRound2Problem);
     const [certificates, setCertificates] = useState<Certificate[]>(mockCertificates);
 
-    const startRound = (roundId: number) => {
-        setRounds(prev => prev.map(r => r.id === roundId ? { ...r, status: 'Active' } : r));
-    };
+   const startRound = (roundId: number) => {
+    setRounds(prev =>
+        prev.map(r =>
+            r.id === roundId
+                ? {
+                    ...r,
+                    status: 'Active',
+                    startedAt: new Date().toISOString()  
+                }
+                : r
+        )
+    );
+};
+
 
     const endRound = (roundId: number) => {
         setRounds(prev => prev.map(r => r.id === roundId ? { ...r, status: 'Finished' } : r));
@@ -66,21 +77,92 @@ export const ContestProvider: React.FC<ContestProviderProps> = ({ children }) =>
     };
     
     const calculateRound1Score = (teamId: string) => {
-        const submission = submissions.find(s => s.teamId === teamId);
-        if (!submission) return;
+    const submission = submissions.find(s => s.teamId === teamId);
+    if (!submission) return;
 
-        let score = 0;
-        for (const mcqId in submission.mcqAnswers) {
-            const mcq = mcqs.find(q => q.id === mcqId);
-            if (mcq && mcq.correctAnswerId === submission.mcqAnswers[mcqId]) {
-                score += POINTS_PER_MCQ;
-            }
+    let score = 0;
+    let wrongAnswers = 0;
+
+    /** -------------------------
+     *   MCQ SCORING
+     *  ------------------------*/
+    const mcqEntries = Object.entries(submission.mcqAnswers);
+    const mcqsToScore = mcqEntries.slice(0, 5); // 5 MCQs total
+
+    mcqsToScore.forEach(([mcqId, answerId]) => {
+        const mcq = mcqs.find(q => q.id === mcqId);
+        if (!mcq) return;
+
+        if (mcq.correctAnswerId === answerId) {
+            score += 4; // 4 marks each
+        } else {
+            wrongAnswers++;
         }
-        
-        // Manual scoring for coding problems would be added here in a real app
-        
-        setSubmissions(prev => prev.map(s => s.teamId === teamId ? { ...s, score } : s));
-    };
+    });
+
+    /** -------------------------
+     *   CODING SCORING (AUTO)
+     *  ------------------------*/
+    let codingScore = 0;
+
+    for (const problemId in submission.codingAnswers) {
+        const codingAns = submission.codingAnswers[problemId];
+        if (!codingAns.submissionResult) continue;
+
+        const passed = codingAns.submissionResult.passed;
+        const total = codingAns.submissionResult.total;
+
+        if (total > 0) {
+            codingScore = (passed / total) * 30; // auto-score out of 30
+        }
+    }
+
+    score += codingScore;
+
+    /** -------------------------
+     *   TIME-BASED SCORING
+     *  ------------------------*/
+    /** TIME-BASED SCORING */
+const round1 = rounds.find(r => r.id === 1);
+
+if (
+    round1 &&
+    typeof round1.startedAt === "string" &&
+    round1.startedAt.trim() !== ""
+) {
+    const roundStart = new Date(round1.startedAt);
+    const submittedAt = new Date(submission.submittedAt);
+
+    let minutesTaken =
+        (submittedAt.getTime() - roundStart.getTime()) / 60000;
+
+    // Wrong answers add +5 min each
+    minutesTaken += wrongAnswers * 5;
+
+    // Bonus inside first 10 minutes
+    if (minutesTaken <= 10) {
+        score += 5;
+    }
+
+    // Late penalty
+    if (round1.durationInMinutes && minutesTaken > round1.durationInMinutes) {
+        const late = minutesTaken - round1.durationInMinutes;
+        score -= late * 0.1;
+    }
+}
+
+
+    if (score < 0) score = 0;
+
+    setSubmissions(prev =>
+        prev.map(s =>
+            s.teamId === teamId
+                ? { ...s, score: Math.round(score) }
+                : s
+        )
+    );
+};
+;
     
     const awardCertificate = (teamId: string, teamName: string, type: CertificateType) => {
         const newCertificate: Certificate = { 
