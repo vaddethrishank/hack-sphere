@@ -3,6 +3,16 @@
   background-size: cover;
   background-position: center;
   filter: brightness(0.8);
+  background-attachment: fixed;
+}
+
+@media (max-width: 768px) {
+  .hero-bg {
+    background-size: contain;
+    background-position: center;
+    background-attachment: scroll;
+    background-repeat: no-repeat;
+  }
 }
 
 .topo-overlay {

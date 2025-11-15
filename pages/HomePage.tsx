@@ -198,9 +198,8 @@ const HomePage: React.FC = () => {
               </h2>
 
               <p className="mt-6 text-base md:text-lg text-dark-text max-w-2xl">
-                A national-level{" "}
-                <span className="text-white font-semibold">24-hour innovation marathon</span> where
-                teams build, pitch and win.
+                Join{" "}
+                <span className="text-white font-semibold">NIT Silchar's premier coding competition</span> featuring three challenging rounds—from online MCQ and coding contests to an intensive <span className="text-white font-semibold">24-hour offline hackathon</span>. Compete nationally, showcase your skills, win exciting prizes, and network with talented developers!
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4 items-center">
