@@ -105,18 +105,35 @@ export interface CodingProblem {
 }
 
 export interface Round1Submission {
+  id?: string | number;
     teamId: string;
     submittedAt: Date;
+  memberId?: string;
     mcqAnswers: { [mcqId: string]: string }; // mcqId: selectedOptionId
     codingAnswers: { [problemId: string]: { code: string; language: string; submissionResult?: { passed: number; total: number } } };
-    score?: number;
+  score?: number;
+  durationInMinutes?: number;
 }
 
 
 export interface Round2Problem {
+    id?: string;
     title: string;
     description: string;
     url?: string;
+    problemFileUrl?: string;
+}
+
+export interface Round2Submission {
+  id?: number | string;
+  teamId: string;
+  solutionFileUrl: string;
+  mae?: number | null;
+  rmse?: number | null;
+  rmsle?: number | null;
+  score?: number | null;
+  rank?: number | null;
+  submittedAt: Date;
 }
 
 export type CertificateType = 'Participation' | 'Appreciation' | 'Outstanding Performance';
@@ -129,21 +146,25 @@ export interface Certificate {
 }
 
 export interface ContestContextType {
-    rounds: Round[];
-    mcqs: MCQ[];
-    codingProblems: CodingProblem[];
-    submissions: Round1Submission[];
-    round2Problem: Round2Problem;
-    certificates: Certificate[];
-    startRound: (roundId: number) => void;
-    endRound: (roundId: number) => void;
-    setRoundDuration: (roundId: number, duration: number) => void;
-    addMcq: (mcq: Omit<MCQ, 'id'>) => void;
-    addCodingProblem: (problem: Omit<CodingProblem, 'id' | 'displayedTestCases' | 'hiddenTestCases'>) => void;
-    submitRound1: (submission: Omit<Round1Submission, 'submittedAt' | 'score'>) => void;
-    getRoundById: (roundId: number) => Round | undefined;
-    getTeamSubmission: (teamId: string) => Round1Submission | undefined;
-    updateRound2Problem: (problem: Round2Problem) => void;
-    calculateRound1Score: (teamId: string) => void;
-    awardCertificate: (teamId: string, teamName: string, type: CertificateType) => void;
+  rounds: Round[];
+  mcqs: MCQ[];
+  codingProblems: CodingProblem[];
+  submissions: Round1Submission[];
+  round2Problem: Round2Problem;
+  round2Submissions: Round2Submission[];
+  certificates: Certificate[];
+  startRound: (roundId: number) => void;
+  endRound: (roundId: number) => void;
+  setRoundDuration: (roundId: number, duration: number) => void;
+  addMcq: (mcq: Omit<MCQ, 'id'>) => void;
+  addCodingProblem: (problem: Omit<CodingProblem, 'id' | 'displayedTestCases' | 'hiddenTestCases'>) => void;
+  submitRound1: (submission: Omit<Round1Submission, 'submittedAt' | 'score'>) => void;
+  submitRound2: (submission: Omit<Round2Submission, 'submittedAt'>) => void;
+  getRoundById: (roundId: number) => Round | undefined;
+  getTeamSubmission: (teamId: string) => Round1Submission | undefined;
+  getTeamMemberSubmission: (teamId: string, memberId: string) => Round1Submission | undefined;
+  getTeamRound2Submission: (teamId: string) => Round2Submission | undefined;
+  updateRound2Problem: (problem: Round2Problem) => void;
+  calculateRound1Score: (teamId: string) => void;
+  awardCertificate: (teamId: string, teamName: string, type: CertificateType) => void;
 }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useContest } from '../../hooks/useContest';
-import { MCQ, MCQOption } from '../../types';
+import { MCQ, MCQOption, TestCase } from '../../types';
 
 const ManageMCQs: React.FC = () => {
     const { mcqs, codingProblems, addMcq, addCodingProblem } = useContest();
@@ -13,6 +13,8 @@ const ManageMCQs: React.FC = () => {
     // State for new Coding Problem form
     const [newProblemTitle, setNewProblemTitle] = useState('');
     const [newProblemDesc, setNewProblemDesc] = useState('');
+    const [displayedTestCases, setDisplayedTestCases] = useState<TestCase[]>([{ input: '', expectedOutput: '' }]);
+    const [hiddenTestCases, setHiddenTestCases] = useState<TestCase[]>([{ input: '', expectedOutput: '' }]);
 
     const handleAddOption = () => {
         if(newMcqOptions.length < 4) {
@@ -37,12 +39,51 @@ const ManageMCQs: React.FC = () => {
         setNewMcqOptions([{id: 'a', text: ''}, {id: 'b', text: ''}]);
         setCorrectAnswerId('a');
     };
+
+    const handleAddDisplayedTestCase = () => {
+        setDisplayedTestCases([...displayedTestCases, { input: '', expectedOutput: '' }]);
+    };
+
+    const handleUpdateDisplayedTestCase = (index: number, field: 'input' | 'expectedOutput', value: string) => {
+        const updated = [...displayedTestCases];
+        updated[index] = { ...updated[index], [field]: value };
+        setDisplayedTestCases(updated);
+    };
+
+    const handleRemoveDisplayedTestCase = (index: number) => {
+        setDisplayedTestCases(displayedTestCases.filter((_, i) => i !== index));
+    };
+
+    const handleAddHiddenTestCase = () => {
+        setHiddenTestCases([...hiddenTestCases, { input: '', expectedOutput: '' }]);
+    };
+
+    const handleUpdateHiddenTestCase = (index: number, field: 'input' | 'expectedOutput', value: string) => {
+        const updated = [...hiddenTestCases];
+        updated[index] = { ...updated[index], [field]: value };
+        setHiddenTestCases(updated);
+    };
+
+    const handleRemoveHiddenTestCase = (index: number) => {
+        setHiddenTestCases(hiddenTestCases.filter((_, i) => i !== index));
+    };
     
     const handleAddCodingProblem = (e: React.FormEvent) => {
         e.preventDefault();
-        addCodingProblem({ title: newProblemTitle, description: newProblemDesc });
+        if (!newProblemTitle.trim() || !newProblemDesc.trim()) {
+            alert('Problem title and description are required.');
+            return;
+        }
+        addCodingProblem({ 
+            title: newProblemTitle, 
+            description: newProblemDesc,
+            displayedTestCases: displayedTestCases.filter(tc => tc.input.trim() && tc.expectedOutput.trim()),
+            hiddenTestCases: hiddenTestCases.filter(tc => tc.input.trim() && tc.expectedOutput.trim()),
+        });
         setNewProblemTitle('');
         setNewProblemDesc('');
+        setDisplayedTestCases([{ input: '', expectedOutput: '' }]);
+        setHiddenTestCases([{ input: '', expectedOutput: '' }]);
     };
 
     return (
@@ -80,6 +121,85 @@ const ManageMCQs: React.FC = () => {
                         <form onSubmit={handleAddCodingProblem} className="space-y-4">
                              <input type="text" value={newProblemTitle} onChange={e => setNewProblemTitle(e.target.value)} placeholder="Problem Title" required className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent" />
                             <textarea value={newProblemDesc} onChange={e => setNewProblemDesc(e.target.value)} placeholder="Problem Description" required rows={4} className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent" />
+                            
+                            {/* Displayed Test Cases */}
+                            <div className="mt-6 pt-4 border-t border-secondary">
+                                <h4 className="text-sm font-semibold text-white mb-3">Displayed Test Cases (Visible to Teams)</h4>
+                                {displayedTestCases.map((tc, index) => (
+                                    <div key={index} className="space-y-2 mb-4 p-3 bg-secondary/50 rounded">
+                                        <input 
+                                            type="text" 
+                                            value={tc.input} 
+                                            onChange={e => handleUpdateDisplayedTestCase(index, 'input', e.target.value)} 
+                                            placeholder="Input" 
+                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent text-sm"
+                                        />
+                                        <input 
+                                            type="text" 
+                                            value={tc.expectedOutput} 
+                                            onChange={e => handleUpdateDisplayedTestCase(index, 'expectedOutput', e.target.value)} 
+                                            placeholder="Expected Output" 
+                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent text-sm"
+                                        />
+                                        {displayedTestCases.length > 1 && (
+                                            <button 
+                                                type="button" 
+                                                onClick={() => handleRemoveDisplayedTestCase(index)} 
+                                                className="text-xs text-red-400 hover:text-red-300"
+                                            >
+                                                Remove Test Case
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button 
+                                    type="button" 
+                                    onClick={handleAddDisplayedTestCase} 
+                                    className="text-sm text-accent hover:text-highlight"
+                                >
+                                    + Add Displayed Test Case
+                                </button>
+                            </div>
+
+                            {/* Hidden Test Cases */}
+                            <div className="mt-6 pt-4 border-t border-secondary">
+                                <h4 className="text-sm font-semibold text-white mb-3">Hidden Test Cases (Grading Only)</h4>
+                                {hiddenTestCases.map((tc, index) => (
+                                    <div key={index} className="space-y-2 mb-4 p-3 bg-secondary/50 rounded">
+                                        <input 
+                                            type="text" 
+                                            value={tc.input} 
+                                            onChange={e => handleUpdateHiddenTestCase(index, 'input', e.target.value)} 
+                                            placeholder="Input" 
+                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent text-sm"
+                                        />
+                                        <input 
+                                            type="text" 
+                                            value={tc.expectedOutput} 
+                                            onChange={e => handleUpdateHiddenTestCase(index, 'expectedOutput', e.target.value)} 
+                                            placeholder="Expected Output" 
+                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent text-sm"
+                                        />
+                                        {hiddenTestCases.length > 1 && (
+                                            <button 
+                                                type="button" 
+                                                onClick={() => handleRemoveHiddenTestCase(index)} 
+                                                className="text-xs text-red-400 hover:text-red-300"
+                                            >
+                                                Remove Test Case
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button 
+                                    type="button" 
+                                    onClick={handleAddHiddenTestCase} 
+                                    className="text-sm text-accent hover:text-highlight"
+                                >
+                                    + Add Hidden Test Case
+                                </button>
+                            </div>
+
                             <button type="submit" className="w-full bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded">Add Coding Problem</button>
                         </form>
                     </div>

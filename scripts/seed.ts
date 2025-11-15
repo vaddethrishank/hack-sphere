@@ -7,8 +7,12 @@
  * Ensure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in .env
  */
 
+import * as dotenv from 'dotenv';
 import { createClient } from '@supabase/supabase-js';
-import { mockTeams, mockRounds, mockMCQs, mockCodingProblems, mockRound2Problem, mockCertificates } from '../data/mockData';
+import { mockTeams, mockRounds, mockMCQs, mockCodingProblems, mockRound2Problem, mockCertificates, mockSubmissions } from '../data/mockData';
+
+// Load environment variables from .env file
+dotenv.config();
 
 const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || '';
@@ -113,6 +117,7 @@ async function seedRound2Problem() {
     title: mockRound2Problem.title,
     description: mockRound2Problem.description,
     url: mockRound2Problem.url,
+    problem_file_url: mockRound2Problem.problemFileUrl,
   });
   if (error) console.error('  ❌ Error seeding Round 2 problem:', error);
   else console.log('  ✅ Seeded Round 2 problem');
@@ -131,6 +136,67 @@ async function seedCertificates() {
   else console.log(`  ✅ Seeded ${certData.length} certificates`);
 }
 
+async function seedSubmissions() {
+  console.log('📦 Seeding submissions...');
+  
+  for (const submission of mockSubmissions) {
+    // Insert into round1_submissions
+    const { data: submissionData, error: subError } = await supabase
+      .from('round1_submissions')
+      .insert({
+        team_id: submission.teamId,
+        submitted_at: submission.submittedAt.toISOString(),
+        score: submission.score || null,
+      })
+      .select();
+    
+    if (subError) {
+      console.error('  ❌ Error seeding submission for team', submission.teamId, subError);
+      continue;
+    }
+
+    const submissionId = submissionData?.[0]?.id;
+    if (!submissionId) continue;
+
+    // Insert MCQ answers - correct column: answer_id
+    const mcqAnswersData = Object.entries(submission.mcqAnswers).map(([mcqId, optionId]) => ({
+      submission_id: submissionId,
+      mcq_id: mcqId,
+      answer_id: optionId,
+    }));
+
+    if (mcqAnswersData.length > 0) {
+      const { error: mcqError } = await supabase
+        .from('round1_mcq_answers')
+        .insert(mcqAnswersData);
+      if (mcqError) {
+        console.error('  ❌ Error seeding MCQ answers for submission', submissionId, mcqError);
+      }
+    }
+
+    // Insert coding answers - correct columns: passed, total
+    const codingAnswersData = Object.entries(submission.codingAnswers).map(([problemId, answer]: [string, any]) => ({
+      submission_id: submissionId,
+      problem_id: problemId,
+      code: answer.code,
+      language: answer.language,
+      passed: answer.submissionResult?.passed || 0,
+      total: answer.submissionResult?.total || 0,
+    }));
+
+    if (codingAnswersData.length > 0) {
+      const { error: codingError } = await supabase
+        .from('round1_coding_answers')
+        .insert(codingAnswersData);
+      if (codingError) {
+        console.error('  ❌ Error seeding coding answers for submission', submissionId, codingError);
+      }
+    }
+  }
+  
+  console.log(`  ✅ Seeded ${mockSubmissions.length} submissions with answers`);
+}
+
 async function main() {
   console.log('\n🌱 Starting Supabase seed...\n');
   try {
@@ -140,6 +206,7 @@ async function main() {
     await seedCodingProblems();
     await seedRound2Problem();
     await seedCertificates();
+    await seedSubmissions();
     console.log('\n✨ Seeding complete!\n');
   } catch (e) {
     console.error('\n❌ Seeding failed:', e);

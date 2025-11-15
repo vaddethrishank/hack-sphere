@@ -121,14 +121,15 @@ export const mockSubmissions: Round1Submission[] = [
         submittedAt: new Date('2025-10-01T10:35:00Z'),
         mcqAnswers: { 'mcq-1': 'b', 'mcq-2': 'a' },
         codingAnswers: { 'cp-1': { code: 'function isPalindrome(str) { ... }', language: 'javascript', submissionResult: { passed: 2, total: 3 } } },
-        score: 10,
+        score: 100,
     }
 ];
 
 export const mockRound2Problem: Round2Problem = {
-    title: 'Real-time Chat Application API',
+    title: 'Real-time  Application API',
     description: 'Design and build the backend API for a real-time chat application. The API should support user authentication, creating chat rooms, sending messages, and retrieving message history. Use WebSockets for real-time communication.',
-    url: 'https://example.com/project-docs'
+    url: 'https://example.com/project-docs',
+    problemFileUrl: null,
 };
 
 export const mockCertificates: Certificate[] = [

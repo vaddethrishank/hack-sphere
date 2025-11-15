@@ -260,9 +260,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
 
         const newTeamId = `team-${Date.now()}`;
+
+        // Validate member emails: all must exist in users table and not have a team assigned
+        const memberEmails = members.map(m => m.email).filter(Boolean);
+        if (memberEmails.length === 0) throw new Error('Please provide at least one member email.');
+
+        try {
+            const { data: existingUsers, error: fetchErr } = await supabase.from('users').select('email, team_id').in('email', memberEmails);
+            if (fetchErr) {
+                console.warn('Failed to validate member emails', fetchErr);
+                throw new Error('Failed to validate member emails. Please try again.');
+            }
+
+            const existingEmails = (existingUsers || []).map((u: any) => u.email);
+            const missing = memberEmails.filter(e => !existingEmails.includes(e));
+            if (missing.length > 0) {
+                throw new Error(`The following emails are not registered users: ${missing.join(', ')}`);
+            }
+
+            const alreadyAssigned = (existingUsers || []).filter((u: any) => u.team_id).map((u: any) => u.email);
+            if (alreadyAssigned.length > 0) {
+                throw new Error(`The following users are already part of a team: ${alreadyAssigned.join(', ')}`);
+            }
+        } catch (e) {
+            throw e;
+        }
+
         // Store the public URL directly in teams table
         const { error } = await supabase.from('teams').insert({ id: newTeamId, name: teamName, college, payment_screenshot_url: screenshotUrl, status: 'Pending' });
-        if (error) throw error;        // Insert team members
+        if (error) throw error;
+
+        // Insert team members
         const memberInserts = members.map(m => ({ team_id: newTeamId, name: m.name, email: m.email, role: m.role }));
         const { error: membersError } = await supabase.from('team_members').insert(memberInserts);
         if (membersError) {
@@ -273,7 +301,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         await supabase.from('users').update({ role: UserRole.TEAM_LEADER, team_id: newTeamId }).eq('id', user.id);
 
         // Also, if some team members already have user profiles (registered users), assign their team_id and role
-        const memberEmails = members.map(m => m.email).filter(Boolean);
         if (memberEmails.length > 0) {
             const { error: updateMembersError } = await supabase
                 .from('users')

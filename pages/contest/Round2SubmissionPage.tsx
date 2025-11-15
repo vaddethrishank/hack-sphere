@@ -5,26 +5,147 @@ import { useContest } from '../../hooks/useContest';
 import { useAuth } from '../../hooks/useAuth';
 
 const Round2SubmissionPage: React.FC = () => {
-    const [projectFile, setProjectFile] = useState<File | null>(null);
+    const [solutionFile, setSolutionFile] = useState<File | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const { round2Problem, getRoundById } = useContest();
+    const [error, setError] = useState('');
+    const { round2Problem, getRoundById, submitRound2, getTeamRound2Submission } = useContest();
     const { user, teams } = useAuth();
     
     const team = user?.teamId ? teams.find(t => t.id === user.teamId) : null;
     const round2 = getRoundById(2);
+    const alreadySubmitted = user?.teamId ? getTeamRound2Submission(user.teamId) : null;
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
-            setProjectFile(e.target.files[0]);
+            setSolutionFile(e.target.files[0]);
+            setError('');
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (projectFile) {
-            setIsSubmitted(true);
+    // const handleSubmit = async (e: React.FormEvent) => {
+    //     e.preventDefault();
+    //     if (!solutionFile) {
+    //         setError('Please select a solution file.');
+    //         return;
+    //     }
+
+    //     if (!user?.teamId) {
+    //         setError('You must be part of a team to submit.');
+    //         return;
+    //     }
+
+    //     setIsSubmitting(true);
+    //     setError('');
+
+    //     try {
+    //         // Upload solution file to Supabase storage
+    //         const fileName = `round2-solution-${user.teamId}-${Date.now()}.zip`;
+    //         const { data: uploadData, error: uploadError } = await (await import('../../lib/supabaseClient')).supabase
+    //             .storage
+    //             .from('round2_solutions')
+    //             .upload(fileName, solutionFile);
+
+    //         if (uploadError) {
+    //             setError('Failed to upload solution file: ' + (uploadError.message || JSON.stringify(uploadError)));
+    //             setIsSubmitting(false);
+    //             return;
+    //         }
+
+    //         // Get public URL
+    //         const { data: publicUrl } = (await import('../../lib/supabaseClient')).supabase
+    //             .storage
+    //             .from('round2_solutions')
+    //             .getPublicUrl(fileName);
+
+    //         if (!publicUrl?.publicUrl) {
+    //             setError('Failed to get public URL for solution file.');
+    //             setIsSubmitting(false);
+    //             return;
+    //         }
+
+    //         // Save submission to database via context
+    //         await submitRound2({
+    //             teamId: user.teamId,
+    //             solutionFileUrl: publicUrl.publicUrl,
+    //         });
+
+    //         setIsSubmitted(true);
+    //         setSolutionFile(null);
+    //     } catch (err: any) {
+    //         setError(err.message || 'Failed to submit solution.');
+    //     } finally {
+    //         setIsSubmitting(false);
+    //     }
+    // };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!solutionFile) {
+        setError("Please select a CSV file.");
+        return;
+    }
+
+    if (!user?.teamId) {
+        setError("You must be part of a team to submit.");
+        return;
+    }
+
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+        const supabase = (await import("../../lib/supabaseClient")).supabase;
+
+        // 1. Upload CSV file to Supabase Storage
+        const fileName = `round2-${user.teamId}-${Date.now()}.csv`;
+
+        const { error: uploadError } = await supabase
+            .storage
+            .from("round2_solutions")
+            .upload(fileName, solutionFile, {
+                contentType: "text/csv"
+            });
+
+        if (uploadError) {
+            setError("Failed to upload CSV file: " + uploadError.message);
+            setIsSubmitting(false);
+            return;
         }
-    };
+
+        // 2. Get public URL for the CSV file
+        const { data: urlData } = supabase
+            .storage
+            .from("round2_solutions")
+            .getPublicUrl(fileName);
+
+        if (!urlData?.publicUrl) {
+            setError("Failed to fetch public CSV file URL.");
+            setIsSubmitting(false);
+            return;
+        }
+
+        const solutionFileUrl = urlData.publicUrl;
+
+        // 3. Save submission via context (will persist to `team_submission` table)
+        try {
+            await submitRound2({ teamId: user.teamId, solutionFileUrl });
+            setIsSubmitted(true);
+            setSolutionFile(null);
+        } catch (e: any) {
+            setError('Failed to save submission: ' + (e?.message || String(e)));
+            setIsSubmitting(false);
+            return;
+        }
+
+    } catch (err: any) {
+        setError(err.message || "Failed to submit solution.");
+    } finally {
+        setIsSubmitting(false);
+    }
+};
+
     
     if (team?.status !== 'Approved') {
         return (
@@ -70,42 +191,61 @@ const Round2SubmissionPage: React.FC = () => {
                         </p>
                         {round2Problem.url && (
                             <div className="mt-6">
-                                <h4 className="text-lg font-semibold text-white mb-2">Reference Link:</h4>
-                                <a 
-                                    href={round2Problem.url} 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="inline-block bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded-md transition-colors break-all"
+                                <a
+                                    href={round2Problem.url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-block bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded-md transition-colors"
+                                    aria-label="Download project docs"
                                 >
-                                    {round2Problem.url}
+                                    📥 Project Docs
+                                </a>
+                            </div>
+                        )}
+                        {round2Problem.problemFileUrl && (
+                            <div className="mt-6">
+                                <h4 className="text-lg font-semibold text-white mb-2">Problem File:</h4>
+                                <a 
+                                    href={round2Problem.problemFileUrl}
+                                    download
+                                    className="inline-block bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded-md transition-colors"
+                                >
+                                    📥 Download Problem File
                                 </a>
                             </div>
                         )}
                     </div>
 
-                    {isSubmitted ? (
+                    {alreadySubmitted ? (
                          <div className="text-center p-8 bg-primary rounded-md">
-                            <h4 className="text-xl font-semibold text-green-400">Project Submitted Successfully!</h4>
-                            <p className="text-dark-text mt-2">Your submission for Round 2 has been received. Good luck!</p>
+                            <h4 className="text-xl font-semibold text-green-400">Solution Submitted Successfully!</h4>
+                            <p className="text-dark-text mt-2">Your Round 2 solution has been received. Thank you for participating!</p>
+                            <p className="text-sm text-gray-400 mt-4">Submitted at: {new Date(alreadySubmitted.submittedAt).toLocaleString()}</p>
+                        </div>
+                    ) : isSubmitted ? (
+                         <div className="text-center p-8 bg-primary rounded-md">
+                            <h4 className="text-xl font-semibold text-green-400">Solution Submitted Successfully!</h4>
+                            <p className="text-dark-text mt-2">Your Round 2 solution has been received. Good luck!</p>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="bg-secondary p-8 rounded-lg shadow-lg">
-                            <h3 className="text-xl font-bold text-white mb-4">Submit Your Project</h3>
-                            <p className="text-sm text-gray-400 mb-4">Please upload your entire project as a single compressed file (.zip recommended).</p>
+                            <h3 className="text-xl font-bold text-white mb-4">Submit Your Solution</h3>
+                            {error && <p className="bg-red-500/20 text-red-400 p-3 rounded-md text-center mb-4">{error}</p>}
+                            <p className="text-sm text-gray-400 mb-4">Please upload your solution as a single CSV file (<code>.csv</code>).</p>
                             <div>
-                                <label htmlFor="projectFile" className="sr-only">Upload Project File</label>
+                                <label htmlFor="solutionFile" className="sr-only">Upload Solution File</label>
                                 <input 
                                     type="file" 
-                                    id="projectFile" 
+                                    id="solutionFile" 
                                     onChange={handleFileChange} 
                                     required 
-                                    accept=".zip,.rar,.7z"
+                                    accept=".csv"
                                     className="w-full text-sm text-dark-text file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-white hover:file:bg-accent/80" 
                                 />
                             </div>
                             <div className="text-center mt-6">
-                                <button type="submit" className="bg-highlight hover:bg-highlight/80 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 disabled:opacity-50" disabled={!projectFile}>
-                                    Submit Final Project
+                                <button type="submit" className="bg-highlight hover:bg-highlight/80 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 disabled:opacity-50" disabled={!solutionFile || isSubmitting}>
+                                    {isSubmitting ? 'Uploading...' : 'Submit Solution'}
                                 </button>
                             </div>
                         </form>

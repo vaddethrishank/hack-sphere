@@ -37,8 +37,8 @@ const RegistrationPage: React.FC = () => {
         }
     };
 
-    const handleMemberChange = (id: number, field: 'name' | 'email', value: string) => {
-        setMembers(members.map(member => member.id === id ? { ...member, [field]: value } : member));
+    const handleMemberChange = (id: number, value: string) => {
+        setMembers(members.map(member => member.id === id ? { ...member, email: value } : member));
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,9 +104,8 @@ const RegistrationPage: React.FC = () => {
             <Section title="Registration Successful!" subtitle="Welcome to Hackathon 2026!">
                 <div className="max-w-md mx-auto text-center bg-secondary p-8 rounded-lg">
                     <h3 className="text-2xl font-bold text-white">Your team has been registered.</h3>
-                    <p className="mt-4 text-dark-text">Your Team ID is:</p>
-                    <p className="text-3xl font-mono my-4 p-4 bg-primary rounded text-highlight">{teamId}</p>
-                    <p className="text-dark-text">Please save this ID for future reference. The team leader will receive an email with further instructions.</p>
+                    <p className="mt-4 text-dark-text">Registration received — please wait for admin approval.</p>
+                    <p className="text-dark-text mt-4">The team leader will receive an email once your registration has been reviewed. You can check your registration status on the dashboard.</p>
                 </div>
             </Section>
         );
@@ -133,17 +132,24 @@ const RegistrationPage: React.FC = () => {
                             {members.map((member, index) => (
                                 <div key={member.id} className="p-4 bg-primary rounded-md flex flex-col sm:flex-row gap-4 items-center">
                                     <span className="font-bold text-accent">{member.role}</span>
-                                    <input type="text" placeholder="Full Name" value={member.name} onChange={e => handleMemberChange(member.id, 'name', e.target.value)} required readOnly={member.role === 'Leader'} className="flex-grow bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent w-full sm:w-auto disabled:opacity-70" />
-                                    <input type="email" placeholder="Email Address" value={member.email} onChange={e => handleMemberChange(member.id, 'email', e.target.value)} required readOnly={member.role === 'Leader'} className="flex-grow bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent w-full sm:w-auto disabled:opacity-70" />
-                                    {index > 1 && (
-                                        <button 
-                                            type="button" 
-                                            onClick={() => handleRemoveMember(member.id)} 
-                                            className="text-red-500 hover:text-red-400 font-bold text-2xl w-6 h-6 flex items-center justify-center rounded-full hover:bg-primary"
-                                            aria-label={`Remove member ${index + 1}`}
-                                        >
-                                            &times;
-                                        </button>
+                                    {member.role === 'Leader' ? (
+                                        <>
+                                            <input type="text" placeholder="Full Name" value={member.name} readOnly className="flex-grow bg-secondary p-2 rounded-md border-transparent w-full sm:w-auto disabled:opacity-70" />
+                                            <input type="email" placeholder="Email Address" value={member.email} readOnly className="flex-grow bg-secondary p-2 rounded-md border-transparent w-full sm:w-auto disabled:opacity-70" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            <input type="email" placeholder="Email Address" value={member.email} onChange={e => handleMemberChange(member.id, e.target.value)} required className="flex-grow bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent w-full sm:w-auto" />
+                                            {index > 1 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleRemoveMember(member.id)}
+                                                    className="text-red-500 hover:text-red-400 font-bold text-2xl w-6 h-6 flex items-center justify-center rounded-full hover:bg-primary"
+                                                    aria-label={`Remove member ${index + 1}`}>
+                                                    &times;
+                                                </button>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             ))}

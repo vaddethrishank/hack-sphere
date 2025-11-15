@@ -81,22 +81,119 @@
 
 // /lib/codeExecutor.ts
 
-export const executeCode = async (code: string, language: string, input: string) => {
+// export const executeCode = async (code: string, language: string, input: string) => {
+//   try {
+//     const response = await fetch("http://localhost:4000/api/execute", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         code,
+//         language,
+//         testCases: [{ input, expectedOutput: "" }], // expectedOutput can be empty for run
+//       }),
+//     });
+
+//     const data = await response.json();
+//     const firstResult = data.results?.[0] || {};
+//     return { output: firstResult.output, error: null };
+//   } catch (err: any) {
+//     return { output: "", error: err.message };
+//   }
+// };
+
+
+
+
+
+// export const executeCode = async (code: string, language: string, input: string) => {
+//   try {
+//     console.log("🚀 EXECUTE START -----------------------------");
+//     console.log("Language:", language);
+//     console.log("Code Preview:", code.substring(0, 150));
+//     console.log("Input Sent:", JSON.stringify(input));
+
+//     const body = {
+//       language,
+//       version: "*",
+//       files: [{ name: "main.cpp", content: code }],
+//       stdin: input,
+//       args: [],
+//       compile_timeout: 20000,
+//       run_timeout: 20000,
+//       compile_memory_limit: -1,
+//       run_memory_limit: -1
+//     };
+
+//     console.log("📤 Request Body:", JSON.stringify(body, null, 2));
+
+//     const response = await fetch("https://emkc.org/api/v2/piston/execute", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(body)
+//     });
+
+//     console.log("📥 Raw Response:", response);
+
+//     const data = await response.json();
+
+//     console.log("📦 Parsed Response:", JSON.stringify(data, null, 2));
+
+//     const output = data.run?.output?.trim() || "";
+//     const stderr = data.run?.stderr || "";
+//     const stdout = data.run?.stdout || "";
+
+//     console.log("🖨️ STDOUT:", JSON.stringify(stdout));
+//     console.log("⚠️ STDERR:", JSON.stringify(stderr));
+//     console.log("🟩 FINAL OUTPUT:", JSON.stringify(output));
+
+//     console.log("🚀 EXECUTE END -----------------------------");
+
+//     return { output, error: null };
+//   } catch (err: any) {
+//     console.error("❌ ERROR IN EXECUTION:", err);
+
+//     return { output: "", error: err.message };
+//   }
+// };
+
+
+
+
+export const executeCode = async (code, language, input) => {
   try {
-    const response = await fetch("http://localhost:4000/api/execute", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        code,
-        language,
-        testCases: [{ input, expectedOutput: "" }], // expectedOutput can be empty for run
-      }),
-    });
+    console.log("Running with JUDGE0...");
+
+    const langMap = {
+      cpp: 54,      // g++ (C++17)
+      c: 50,
+      python: 71,
+      java: 62,
+      js: 63,
+    };
+
+    const response = await fetch(
+      "https://ce.judge0.com/submissions?base64_encoded=false&wait=true",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source_code: code,
+          language_id: langMap[language],
+          stdin: input,
+        }),
+      }
+    );
 
     const data = await response.json();
-    const firstResult = data.results?.[0] || {};
-    return { output: firstResult.output, error: null };
-  } catch (err: any) {
+
+    const output =
+      data.stdout?.trim() ||
+      data.stderr?.trim() ||
+      data.compile_output?.trim() ||
+      "";
+
+    return { output, error: null };
+  } catch (err) {
     return { output: "", error: err.message };
   }
 };

@@ -24,7 +24,7 @@ const LoadingSpinner: React.FC = () => (
 
 
 const Round1ContestPage: React.FC = () => {
-    const { mcqs, codingProblems, getRoundById, submitRound1, getTeamSubmission } = useContest();
+    const { mcqs, codingProblems, getRoundById, submitRound1, getTeamMemberSubmission } = useContest();
     const { user, teams } = useAuth();
     
     const [mcqAnswers, setMcqAnswers] = useState<{ [key: string]: string }>({});
@@ -32,13 +32,15 @@ const Round1ContestPage: React.FC = () => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [timeLeft, setTimeLeft] = useState<number | null>(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [submitError, setSubmitError] = useState('');
     const [viewAll, setViewAll] = useState(false);
     const [runResults, setRunResults] = useState<{ [problemId: string]: { message: string; results: any[] } }>({});
     const [isProcessing, setIsProcessing] = useState<{ [key: string]: boolean }>({});
 
     const team = user?.teamId ? teams.find(t => t.id === user.teamId) : null;
     const round1 = getRoundById(1);
-    const existingSubmission = user?.teamId ? getTeamSubmission(user.teamId) : undefined;
+    // Check if THIS MEMBER has already submitted (not the whole team)
+    const memberAlreadySubmitted = user?.teamId && user?.id ? getTeamMemberSubmission(user.teamId, user.id) : undefined;
     
     const allQuestions: Question[] = useMemo(() => [
         ...mcqs.map(q => ({ ...q, type: 'mcq' as const })),
@@ -46,20 +48,85 @@ const Round1ContestPage: React.FC = () => {
     ], [mcqs, codingProblems]);
     
     const handleSubmit = useCallback(async () => {
-        if (user && user.teamId && !existingSubmission && !isSubmitted) {
-            try {
-                await submitRound1({ teamId: user.teamId, mcqAnswers, codingAnswers });
-                setIsSubmitted(true);
-                localStorage.removeItem(`round1_startTime_${user.teamId}`);
-            } catch (error) {
-                console.error("Failed to submit:", error);
-                alert("There was an error submitting your test. Please check your connection and try again. If the problem persists, contact an organizer.");
-            }
+        console.log('📤 handleSubmit called', { 
+            hasUser: !!user, 
+            hasTeamId: !!user?.teamId, 
+            memberAlreadySubmitted, 
+            isSubmitted 
+        });
+
+        if (!user) {
+            console.error('❌ No user found');
+            alert('You must be logged in to submit.');
+            return;
         }
-    }, [user, existingSubmission, isSubmitted, mcqAnswers, codingAnswers, submitRound1]);
+
+        if (!user.teamId) {
+            console.error('❌ User has no teamId');
+            alert('You must be part of a team to submit.');
+            return;
+        }
+
+        if (memberAlreadySubmitted) {
+            console.error('❌ Member already submitted');
+            alert('You have already submitted for this round.');
+            return;
+        }
+
+        if (isSubmitted) {
+            console.error('❌ Already marked as submitted');
+            return;
+        }
+
+        if (typeof navigator !== 'undefined' && !navigator.onLine) {
+            console.error('❌ Offline - cannot submit');
+            setSubmitError('You appear to be offline. Check your connection and try again.');
+            alert('You appear to be offline. Check your connection and try again.');
+            return;
+        }
+
+        try {
+            console.log('📊 Preparing submission...', { 
+                teamId: user.teamId, 
+                memberId: user.id,
+                mcqAnswersCount: Object.keys(mcqAnswers).length,
+                codingAnswersCount: Object.keys(codingAnswers).length
+            });
+
+            // Calculate duration from localStorage
+            const startTimeKey = `round1_startTime_${user.teamId}`;
+            const storedStartTime = localStorage.getItem(startTimeKey);
+            let durationInMinutes = 0;
+            if (storedStartTime) {
+                const startTime = parseInt(storedStartTime, 10);
+                durationInMinutes = Math.round((Date.now() - startTime) / 60000);
+                console.log('⏱️  Duration:', durationInMinutes, 'minutes');
+            } else {
+                console.warn('⚠️  No stored start time found');
+            }
+
+            console.log('🚀 Calling submitRound1...');
+            await submitRound1({ 
+                teamId: user.teamId, 
+                mcqAnswers, 
+                codingAnswers,
+                memberId: user.id,
+                durationInMinutes,
+            });
+
+            console.log('✅ submitRound1 returned successfully');
+            setIsSubmitted(true);
+            localStorage.removeItem(startTimeKey);
+        } catch (error: any) {
+            console.error("❌ Failed to submit:", error);
+            const msg = error?.message || String(error) || 'Submission failed';
+            setSubmitError(msg);
+            alert(msg);
+        }
+    }, [user, memberAlreadySubmitted, isSubmitted, mcqAnswers, codingAnswers, submitRound1]);
 
     useEffect(() => {
-        if (round1?.status === 'Active' && user?.teamId && !existingSubmission && !isSubmitted) {
+        if (round1?.status === 'Active' && user?.teamId && !memberAlreadySubmitted && !isSubmitted) {
             const startTimeKey = `round1_startTime_${user.teamId}`;
             const storedStartTime = localStorage.getItem(startTimeKey);
             const contestDuration = (round1.durationInMinutes || 0) * 60;
@@ -86,7 +153,7 @@ const Round1ContestPage: React.FC = () => {
             const interval = setInterval(updateTimer, 1000);
             return () => clearInterval(interval);
         }
-    }, [round1, user, handleSubmit, existingSubmission, isSubmitted]);
+    }, [round1, user, handleSubmit, memberAlreadySubmitted, isSubmitted]);
 
     const handleRunCode = async (problem: CodingProblem) => {
         const problemState = codingAnswers[problem.id];
@@ -173,12 +240,12 @@ const Round1ContestPage: React.FC = () => {
         );
     }
 
-    if (existingSubmission || isSubmitted) {
+    if (memberAlreadySubmitted || isSubmitted) {
         return (
             <div className="min-h-[calc(100vh-8rem)] flex items-center justify-center animate-fade-in-up">
                 <div className="text-center bg-secondary p-8 rounded-lg max-w-md mx-auto">
                     <h3 className="text-2xl font-bold text-green-400">Submission Received</h3>
-                    <p className="text-dark-text mt-2">Your team's submission for Round 1 has been recorded.</p>
+                    <p className="text-dark-text mt-2">Your submission for Round 1 has been recorded.</p>
                 </div>
             </div>
         );
@@ -311,6 +378,12 @@ const Round1ContestPage: React.FC = () => {
             {/* Main Content */}
             <div className="flex-grow w-full md:w-2/3">
                  <h1 className="text-3xl font-bold text-white mb-4">Round 1: Online Challenge</h1>
+                 {submitError && (
+                     <div className="mb-4 p-3 bg-red-600/20 text-red-300 rounded">
+                         <strong className="block">Submission Error</strong>
+                         <p className="text-sm mt-1">{submitError}</p>
+                     </div>
+                 )}
                  {viewAll ? (
                     allQuestions.map(renderQuestion)
                  ) : (
