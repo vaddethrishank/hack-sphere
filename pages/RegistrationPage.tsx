@@ -162,10 +162,23 @@ const RegistrationPage: React.FC = () => {
                     </div>
                     
                     <div className="p-4 bg-primary rounded-md">
-                        <p className="text-sm text-dark-text text-center">Registration Fee: ₹500 per team.</p>
-                        <p className="text-xs text-gray-400 text-center mb-4">Payment instructions will be emailed to the team leader upon registration.</p>
-                        
-                        <div>
+                        <h4 className="text-md font-semibold text-white text-center">Registration & Payment</h4>
+                        <p className="text-sm text-dark-text text-center mt-2">Registration Fee: Rs. 2000 per team.</p>
+                        <p className="text-sm text-dark-text text-center">Deadline for Registration: <strong>30th December 2025</strong></p>
+
+                        <div className="mt-4 bg-secondary/20 p-4 rounded-md">
+                            <h5 className="text-sm font-medium text-white mb-2">Bank Account Details</h5>
+                            <ul className="text-sm text-dark-text space-y-1">
+                                <li><strong>Account Number:</strong> XXX</li>
+                                <li><strong>Account Holder Name:</strong> YYYY</li>
+                                <li><strong>Bank:</strong> SBI, Branch: NIT Silchar</li>
+                                <li><strong>IFSC Code:</strong> SBIN0007061</li>
+                                <li><strong>MICR Code:</strong> 788002004</li>
+                            </ul>
+                            <p className="text-xs text-gray-400 mt-3">Please deposit the registration fee to the above account and upload the payment screenshot below as proof of payment.</p>
+                        </div>
+
+                        <div className="mt-4">
                             <label htmlFor="paymentScreenshot" className="block text-sm font-medium text-dark-text mb-2">
                                 Payment Screenshot <span className="text-red-400">*</span>
                             </label>

@@ -112,7 +112,7 @@ const timelineEvents = [
 
 const sponsors = [
   { name: "Google", logo: "/assets/google.jpeg" },
-  { name: "Amazon", logo: "/assets/amazon.jpeg" },
+  { name: "Amazon", logo: "/assets/amazon.webp" },
   { name: "Microsoft", logo: "/assets/microsoft.jpeg" },
   { name: "Tata", logo: "/assets/tata.jpeg" },
   { name: "CocaCola", logo: "/assets/cocacola.jpeg" },

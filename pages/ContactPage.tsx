@@ -84,8 +84,7 @@ const ContactPage: React.FC = () => {
 
                         <div>
                             <h3 className="text-xl font-semibold text-white">Event Coordinators</h3>
-                            <p className="mt-2">Rohan Sharma: +91 12345 67890</p>
-                            <p>Priya Singh: +91 09876 54321</p>
+                            <p className="mt-2">CR, Sec A & B, B.Tech (CSE), 3rd year, NIT Silchar</p>
                         </div>
                     </div>
 

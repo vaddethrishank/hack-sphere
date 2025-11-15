@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { NavLink as RouterNavLink, useNavigate } from 'react-router-dom';
-import ThemeToggle from './ThemeToggle';
 import { NavLink } from '../types';
 import { useAuth } from '../hooks/useAuth';
 
@@ -39,7 +38,7 @@ const Navbar: React.FC = () => {
                     <button onClick={handleLogout} className="text-dark-text/80 hover:text-white font-medium">
                         Logout
                     </button>
-                    {isMobile && <ThemeToggle />}
+                    {/* theme toggle removed - dark mode only */}
                 </div>
             );
         }
@@ -51,7 +50,7 @@ const Navbar: React.FC = () => {
                 <RouterNavLink to="/signup" className="bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105">
                     Sign Up
                 </RouterNavLink>
-                {isMobile && <ThemeToggle />}
+                {/* theme toggle removed - dark mode only */}
             </div>
         );
     };
@@ -79,8 +78,7 @@ const Navbar: React.FC = () => {
                         </div>
                     </div>
                     <div className="hidden md:flex items-center space-x-4">
-                        <AuthButtons />
-                        <ThemeToggle />
+                            <AuthButtons />
                     </div>
                     <div className="-mr-2 flex md:hidden">
                         <button

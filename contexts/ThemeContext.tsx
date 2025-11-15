@@ -1,11 +1,10 @@
 
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useEffect, ReactNode } from 'react';
 
-type Theme = 'light' | 'dark';
+type Theme = 'dark';
 
 interface ThemeContextType {
   theme: Theme;
-  toggleTheme: () => void;
 }
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -15,29 +14,17 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [theme, setTheme] = useState<Theme>('dark');
+  const theme: Theme = 'dark';
 
   useEffect(() => {
     const root = window.document.documentElement;
-    const initialTheme = localStorage.getItem('theme') as Theme || 'dark';
-    setTheme(initialTheme);
+    // Force dark mode classes at startup
     root.classList.remove('light', 'dark');
-    root.classList.add(initialTheme);
+    root.classList.add('dark');
   }, []);
 
-  const toggleTheme = () => {
-    setTheme(prevTheme => {
-        const newTheme = prevTheme === 'light' ? 'dark' : 'light';
-        localStorage.setItem('theme', newTheme);
-        const root = window.document.documentElement;
-        root.classList.remove(prevTheme);
-        root.classList.add(newTheme);
-        return newTheme;
-    });
-  };
-
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme }}>
       {children}
     </ThemeContext.Provider>
   );
