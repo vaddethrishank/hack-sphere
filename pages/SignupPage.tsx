@@ -47,7 +47,7 @@ const SignupPage: React.FC = () => {
                             <label htmlFor="password" className="block text-sm font-medium text-dark-text mb-2">Password</label>
                             <input type="password" id="password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full bg-primary p-3 rounded-md border border-secondary focus:ring-accent focus:border-accent" />
                         </div>
-                        <button type="submit" className="w-full bg-accent hover:bg-accent/80 text-white font-bold py-3 px-4 rounded-md transition-colors">
+                        <button type="submit" className="w-full bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-3 px-4 rounded-md transition-colors">
                             Sign Up
                         </button>
                     </form>

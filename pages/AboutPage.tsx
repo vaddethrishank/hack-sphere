@@ -4,7 +4,8 @@ import Section from '../components/Section';
 
 const AboutPage: React.FC = () => {
     return (
-        <div className="animate-fade-in-up">
+        <div className="animate-fade-in-up relative">
+            {/* Global Christmas Background is rendered in App.tsx */}
             <Section title="About Hackathon 2026">
                 <div className="max-w-4xl mx-auto text-center text-dark-text">
                     <p className="text-lg mb-6">

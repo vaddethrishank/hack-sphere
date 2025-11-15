@@ -27,7 +27,7 @@ const ManageProblems: React.FC = () => {
                             id="problemTitle"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="w-full bg-secondary p-3 rounded-md border-transparent focus:ring-accent focus:border-accent"
+                            className="w-full bg-secondary p-3 rounded-md border-transparent focus:ring-frozen-ice focus:border-frozen-ice"
                             required
                         />
                     </div>
@@ -38,7 +38,7 @@ const ManageProblems: React.FC = () => {
                             rows={10}
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            className="w-full bg-secondary p-3 rounded-md border-transparent focus:ring-accent focus:border-accent"
+                            className="w-full bg-secondary p-3 rounded-md border-transparent focus:ring-frozen-ice focus:border-frozen-ice"
                             required
                         />
                     </div>
@@ -50,11 +50,11 @@ const ManageProblems: React.FC = () => {
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
                             placeholder="https://example.com/api/docs"
-                            className="w-full bg-secondary p-3 rounded-md border-transparent focus:ring-accent focus:border-accent"
+                            className="w-full bg-secondary p-3 rounded-md border-transparent focus:ring-frozen-ice focus:border-frozen-ice"
                         />
                     </div>
                     <div className="flex items-center justify-between">
-                        <button type="submit" className="bg-accent hover:bg-accent/80 text-white font-bold py-2 px-6 rounded-md transition-colors">
+                        <button type="submit" className="bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-2 px-6 rounded-md transition-colors">
                             Save & Publish
                         </button>
                         {successMessage && <p className="text-green-400 text-sm">{successMessage}</p>}

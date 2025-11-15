@@ -67,7 +67,7 @@ const ContactPage: React.FC = () => {
 
                                 <button
                                     type="submit"
-                                    className="w-full bg-accent text-white font-bold py-3 px-4 rounded-md"
+                                    className="w-full bg-christmas-green text-white font-bold py-3 px-4 rounded-md"
                                 >
                                     Send Message
                                 </button>

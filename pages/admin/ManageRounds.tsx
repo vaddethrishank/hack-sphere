@@ -61,9 +61,9 @@ const ManageRounds: React.FC = () => {
                                     id="duration"
                                     value={duration}
                                     onChange={handleDurationChange}
-                                    className="bg-secondary p-2 rounded-md w-24 border-transparent focus:ring-accent focus:border-accent"
+                                    className="bg-secondary p-2 rounded-md w-24 border-transparent focus:ring-frozen-ice focus:border-frozen-ice"
                                 />
-                                <button onClick={handleSetDuration} className="bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded transition-colors">
+                                    <button onClick={handleSetDuration} className="bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-2 px-4 rounded transition-colors">
                                     Set Duration
                                 </button>
                             </div>

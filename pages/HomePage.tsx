@@ -97,6 +97,7 @@
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Section from "../components/Section";
+import ScrollTimeline from "../components/ScrollTimeline";
 import VanillaTilt from "vanilla-tilt";
 import "./HomePage.extra.css";
 import { Calendar, Info, Brain, MapPin } from "lucide-react";
@@ -161,7 +162,9 @@ const HomePage: React.FC = () => {
   }, []);
 
   return (
-    <div className="animate-fade-in-up">
+    <div className="animate-fade-in-up relative">
+      {/* Global Christmas Background is rendered in App.tsx */}
+      
       {/* HERO BLOCK */}
       <div className="relative min-h-[88vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 topo-overlay z-10 pointer-events-none"></div>
@@ -199,7 +202,7 @@ const HomePage: React.FC = () => {
               <div className="mt-8 flex flex-wrap gap-4 items-center">
                 <NavLink
                   to="/registration"
-                  className="inline-flex items-center gap-3 bg-accent hover:bg-[#d400d4] text-white font-bold py-3 px-6 rounded-full text-lg transition transform hover:scale-[1.03] shadow-lg shadow-accent/30"
+                  className="inline-flex items-center gap-3 bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-3 px-6 rounded-full text-lg transition transform hover:scale-[1.03] shadow-lg shadow-frozen-ice/30"
                 >
                   Register Now
                 </NavLink>
@@ -276,22 +279,15 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* TIMELINE */}
-      <Section title="Event Timeline" subtitle="Track all important dates at a glance.">
-        <div className="max-w-4xl mx-auto py-8 flex flex-col gap-6">
-          {timelineEvents.map((event, i) => (
-            <div
-              key={i}
-              className={`p-6 rounded-2xl shadow-xl border-l-4 ${
-                i % 2 === 0 ? "border-accent" : "border-highlight"
-              } card-glass`}
-            >
-              <div className="text-gray text-sm">{event.date}</div>
-              <h3 className="text-gray text-2xl font-bold mt-1">{event.title}</h3>
-              <p className="text-dark-text mt-2">{event.description}</p>
-            </div>
-          ))}
+      <section className="py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ScrollTimeline 
+            events={timelineEvents} 
+            title="Event Timeline" 
+            subtitle="Track all important dates as you scroll down."
+          />
         </div>
-      </Section>
+      </section>
 
       {/* PRIZES */}
       <Section title="Prizes & Rewards" subtitle="Win big rewards, goodies and more!">
@@ -303,7 +299,7 @@ const HomePage: React.FC = () => {
             Top winners receive cash prizes, cloud credits, internships and premium goodies.
           </p>
 
-          <NavLink to="/prizes" className="font-semibold text-accent hover:text-highlight transition">
+          <NavLink to="/prizes" className="font-semibold text-frozen-ice hover:text-christmas-green transition">
             See All Prizes →
           </NavLink>
         </div>

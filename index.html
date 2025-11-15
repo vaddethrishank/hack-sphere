@@ -15,15 +15,32 @@
                 colors: {
                     'primary': '#000000',
                     'secondary': '#25284B',
-                    'accent': '#b200b2',
-                    'highlight': '#EB4A94',
+                    /* make `accent` the frozen-ice blue so existing uses switch from red -> blue */
+                    'accent': '#6BCBFF',
+                    /* highlight (green) upgraded to bright neon emerald green with matching glow */
+                    'highlight': '#00E676',
                     'dark-text': '#E0E0E0',
+                    /* Christmas theme extras (map decorative token to blue as well) */
+                    'christmas-red': '#6BCBFF',
+                    'christmas-green': '#0B6623',
+                    'ornament': '#FFD700',
+                    /* frozen-ice token also available explicitly */
+                    'frozen-ice': '#6BCBFF',
+                    /* Christmas gradient colors for background */
+                    'christmas-dark': '#0A1428',
+                    'christmas-mid': '#1a2b4d',
                 },
                 animation: {
                     'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
                     'glow': 'glow 2s ease-in-out infinite alternate',
                     'underline': 'underline 0.8s ease forwards',
                     'floaty': 'floaty 4s ease-in-out infinite',
+                    /* Christmas animations */
+                    'snow-fall': 'snow 12s linear infinite',
+                    'twinkle': 'twinkle 2.5s ease-in-out infinite',
+                    'pulse-glow': 'pulse-glow 1.5s ease-in-out infinite',
+                    'sway': 'sway 4s ease-in-out infinite',
+                    'sparkle': 'sparkle 1.2s ease-in-out infinite',
                 },
                 keyframes: {
                     fadeInUp: {
@@ -32,12 +49,13 @@
                     },
                     glow: {
                         from: {
+                            /* neon glow: frozen-ice blue to neon green for vibrant dual-tone shimmer */
                             textShadow:
-                                '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #3671E9, 0 0 20px #3671E9',
+                                '0 0 5px #fff, 0 0 10px #fff, 0 0 12px #6BCBFF, 0 0 18px #00E676',
                         },
                         to: {
                             textShadow:
-                                '0 0 10px #fff, 0 0 15px #fff, 0 0 20px #EB4A94, 0 0 25px #EB4A94',
+                                '0 0 10px #fff, 0 0 15px #6BCBFF, 0 0 22px #2B7BBF, 0 0 28px #00E676',
                         },
                     },
                     underline: {
@@ -48,6 +66,36 @@
                         '0%': { transform: 'translateY(0px)' },
                         '50%': { transform: 'translateY(-6px)' },
                         '100%': { transform: 'translateY(0px)' },
+                    },
+                    snow: {
+                        '0%': { transform: 'translateY(-10vh)', opacity: '0' },
+                        '10%': { opacity: '1' },
+                        '100%': { transform: 'translateY(110vh)', opacity: '0' },
+                    },
+                    twinkle: {
+                        '0%': { opacity: '0.3', transform: 'scale(0.9)' },
+                        '50%': { opacity: '1', transform: 'scale(1.1)' },
+                        '100%': { opacity: '0.3', transform: 'scale(0.9)' },
+                    },
+                    shimmer: {
+                        '0%': { opacity: '0.2', transform: 'translateX(-100%)' },
+                        '50%': { opacity: '1' },
+                        '100%': { opacity: '0.2', transform: 'translateX(100%)' },
+                    },
+                    'pulse-glow': {
+                        '0%': { opacity: '0.5', boxShadow: '0 0 5px currentColor' },
+                        '50%': { opacity: '1', boxShadow: '0 0 20px currentColor' },
+                        '100%': { opacity: '0.5', boxShadow: '0 0 5px currentColor' },
+                    },
+                    sway: {
+                        '0%': { transform: 'translateX(0) rotate(-2deg)' },
+                        '50%': { transform: 'translateX(10px) rotate(2deg)' },
+                        '100%': { transform: 'translateX(0) rotate(-2deg)' },
+                    },
+                    sparkle: {
+                        '0%': { opacity: '0', transform: 'scale(0)' },
+                        '50%': { opacity: '1', transform: 'scale(1)' },
+                        '100%': { opacity: '0', transform: 'scale(0)' },
                     },
                 },
             },
@@ -67,7 +115,7 @@
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
-<body class="bg-primary text-dark-text">
+<body class="bg-gradient-to-br from-primary via-secondary to-primary/95 text-dark-text min-h-screen">
     <div id="root"></div>
 <script type="module" src="/index.tsx"></script>
 </body>

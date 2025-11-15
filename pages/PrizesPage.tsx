@@ -24,7 +24,8 @@ const PrizeCard: React.FC<{ prize: Prize, isWinner?: boolean }> = ({ prize, isWi
 
 const PrizesPage: React.FC = () => {
     return (
-        <div className="animate-fade-in-up">
+        <div className="animate-fade-in-up relative">
+            {/* Global Christmas Background is rendered in App.tsx */}
             <Section title="Prizes and Recognition" subtitle="Rewarding innovation and excellence with a massive prize pool.">
                 <div className="grid md:grid-cols-3 gap-8">
                     {prizes.map((prize, index) => (

@@ -34,7 +34,8 @@ const rounds = [
 
 const RoundsPage: React.FC = () => {
   return (
-    <div className="animate-fade-in-up">
+    <div className="animate-fade-in-up relative">
+      {/* Global Christmas Background is rendered in App.tsx */}
       <Section title="Competition Rounds" subtitle="The journey to victory is spread across three challenging rounds.">
         <div className="space-y-12">
           {rounds.map((round) => (

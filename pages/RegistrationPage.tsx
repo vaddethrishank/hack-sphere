@@ -91,7 +91,7 @@ const RegistrationPage: React.FC = () => {
                 <div className="max-w-md mx-auto text-center bg-secondary p-8 rounded-lg">
                     <h3 className="text-2xl font-bold text-white">Your team is already registered.</h3>
                     <p className="mt-4 text-dark-text">You can now view your team's status and prepare for the competition rounds.</p>
-                    <NavLink to="/dashboard" className="mt-8 inline-block bg-accent hover:bg-accent/80 text-white font-bold py-3 px-6 rounded-full transition-colors">
+                    <NavLink to="/dashboard" className="mt-8 inline-block bg-christmas-green hover:bg-christmas-green/80 text-white font-bold py-3 px-6 rounded-full transition-colors">
                         Go to Dashboard
                     </NavLink>
                 </div>
@@ -112,7 +112,8 @@ const RegistrationPage: React.FC = () => {
     }
     
     return (
-        <div className="animate-fade-in-up">
+        <div className="animate-fade-in-up relative">
+            {/* Global Christmas Background is rendered in App.tsx */}
             <Section title="Register Your Team" subtitle="Form a team and get ready to code!">
                 <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-8 bg-secondary p-8 rounded-lg shadow-lg">
                     {error && <p className="bg-red-500/20 text-red-400 p-3 rounded-md text-center">{error}</p>}
@@ -155,7 +156,7 @@ const RegistrationPage: React.FC = () => {
                             ))}
                         </div>
                         {members.length < 5 && (
-                             <button type="button" onClick={handleAddMember} className="mt-4 bg-accent/50 hover:bg-accent text-white font-bold py-2 px-4 rounded transition-colors">
+                             <button type="button" onClick={handleAddMember} className="mt-4 bg-ornament/50 hover:bg-ornament text-primary font-bold py-2 px-4 rounded transition-colors">
                                 + Add Member
                             </button>
                         )}
@@ -188,7 +189,7 @@ const RegistrationPage: React.FC = () => {
                                 onChange={handleFileChange} 
                                 required 
                                 accept="image/*"
-                                className="w-full text-sm text-dark-text file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-white hover:file:bg-accent/80 cursor-pointer"
+                                className="w-full text-sm text-dark-text file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-frozen-ice file:text-white hover:file:bg-frozen-ice/80 cursor-pointer"
                             />
                             {previewUrl && (
                                 <div className="mt-4 text-center">
@@ -200,7 +201,7 @@ const RegistrationPage: React.FC = () => {
                     </div>
 
                     <div className="text-center">
-                         <button type="submit" className="bg-highlight hover:bg-highlight/80 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 shadow-lg shadow-highlight/30 disabled:opacity-50" disabled={isSubmitting || members.length < 2}>
+                         <button type="submit" className="bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 shadow-lg shadow-frozen-ice/30 disabled:opacity-50" disabled={isSubmitting || members.length < 2}>
                             {isSubmitting ? 'Submitting...' : 'Submit Registration'}
                         </button>
                     </div>

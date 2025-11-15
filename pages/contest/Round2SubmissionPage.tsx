@@ -153,7 +153,7 @@ const Round2SubmissionPage: React.FC = () => {
                <div className="text-center bg-secondary p-8 rounded-lg max-w-md mx-auto">
                    <h3 className="text-2xl font-bold text-yellow-400">Team Not Approved</h3>
                    <p className="text-dark-text mt-2">Your team must be approved by an administrator before you can participate in this round.</p>
-                   <NavLink to="/dashboard" className="mt-8 inline-block text-accent hover:underline">
+                   <NavLink to="/dashboard" className="mt-8 inline-block text-frozen-ice hover:underline">
                         &larr; Back to Dashboard
                     </NavLink>
                </div>
@@ -185,7 +185,7 @@ const Round2SubmissionPage: React.FC = () => {
             <Section title="Round 2: Project Submission">
                 <div className="max-w-4xl mx-auto">
                     <div className="bg-secondary p-8 rounded-lg shadow-lg mb-8">
-                        <h3 className="text-2xl font-bold text-accent mb-4">{round2Problem.title}</h3>
+                        <h3 className="text-2xl font-bold text-frozen-ice mb-4">{round2Problem.title}</h3>
                         <p className="text-dark-text space-y-4 whitespace-pre-wrap">
                            {round2Problem.description}
                         </p>
@@ -195,7 +195,7 @@ const Round2SubmissionPage: React.FC = () => {
                                     href={round2Problem.url}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-block bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded-md transition-colors"
+                                    className="inline-block bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-2 px-4 rounded-md transition-colors"
                                     aria-label="Download project docs"
                                 >
                                     📥 Project Docs
@@ -208,7 +208,7 @@ const Round2SubmissionPage: React.FC = () => {
                                 <a 
                                     href={round2Problem.problemFileUrl}
                                     download
-                                    className="inline-block bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded-md transition-colors"
+                                    className="inline-block bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-2 px-4 rounded-md transition-colors"
                                 >
                                     📥 Download Problem File
                                 </a>
@@ -240,11 +240,11 @@ const Round2SubmissionPage: React.FC = () => {
                                     onChange={handleFileChange} 
                                     required 
                                     accept=".csv"
-                                    className="w-full text-sm text-dark-text file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-accent file:text-white hover:file:bg-accent/80" 
+                                    className="w-full text-sm text-dark-text file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-christmas-red file:text-white hover:file:bg-christmas-red/80" 
                                 />
                             </div>
                             <div className="text-center mt-6">
-                                <button type="submit" className="bg-highlight hover:bg-highlight/80 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 disabled:opacity-50" disabled={!solutionFile || isSubmitting}>
+                                <button type="submit" className="bg-christmas-green hover:bg-christmas-green/80 text-white font-bold py-3 px-8 rounded-full text-lg transition-transform transform hover:scale-105 disabled:opacity-50" disabled={!solutionFile || isSubmitting}>
                                     {isSubmitting ? 'Uploading...' : 'Submit Solution'}
                                 </button>
                             </div>

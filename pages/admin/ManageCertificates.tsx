@@ -97,13 +97,13 @@ const ManageCertificates: React.FC = () => {
                 <div className="flex flex-col sm:flex-row gap-4">
                     <button 
                         onClick={autoAwardCertificates}
-                        className="flex-1 bg-highlight hover:bg-highlight/80 text-white font-bold py-4 px-6 rounded-lg transition-colors text-lg"
+                        className="flex-1 bg-christmas-green hover:bg-christmas-green/80 text-white font-bold py-4 px-6 rounded-lg transition-colors text-lg"
                     >
                         🎖️ Auto-Award All Certificates
                     </button>
                     <button 
                         type="button"
-                        className="flex-1 bg-accent hover:bg-accent/80 text-white font-bold py-4 px-6 rounded-lg transition-colors text-lg"
+                        className="flex-1 bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-4 px-6 rounded-lg transition-colors text-lg"
                         onClick={() => document.getElementById('manual-award')?.scrollIntoView({ behavior: 'smooth' })}
                     >
                         ➕ Award Single Certificate
@@ -122,7 +122,7 @@ const ManageCertificates: React.FC = () => {
                         <ul className="space-y-2">
                             {certificateBreakdown.participation.length > 0 ? (
                                 certificateBreakdown.participation.map(team => (
-                                    <li key={team.id} className="text-sm text-white bg-accent/10 p-2 rounded flex items-center justify-between">
+                                    <li key={team.id} className="text-sm text-white bg-frozen-ice/10 p-2 rounded flex items-center justify-between">
                                         <span>{team.name}</span>
                                         {certificates.some(c => c.teamId === team.id && c.type === 'Participation') && (
                                             <span className="text-xs text-green-400">✓</span>
@@ -203,7 +203,7 @@ const ManageCertificates: React.FC = () => {
                                 id="team-select"
                                 value={selectedTeamId}
                                 onChange={e => setSelectedTeamId(e.target.value)}
-                                className="w-full bg-secondary p-3 rounded-md border-transparent focus:ring-accent focus:border-accent"
+                                className="w-full bg-secondary p-3 rounded-md border-transparent focus:ring-christmas-red focus:border-christmas-red"
                             >
                                 <option value="" disabled>-- Select a team --</option>
                                 {eligibleTeams.map(team => (
@@ -217,14 +217,14 @@ const ManageCertificates: React.FC = () => {
                                 id="cert-type"
                                 value={selectedCertType}
                                 onChange={e => setSelectedCertType(e.target.value as CertificateType)}
-                                className="w-full bg-secondary p-3 rounded-md border-transparent focus:ring-accent focus:border-accent"
+                                className="w-full bg-secondary p-3 rounded-md border-transparent focus:ring-christmas-red focus:border-christmas-red"
                             >
                                 <option>Participation</option>
                                 <option>Appreciation</option>
                                 <option>Outstanding Performance</option>
                             </select>
                         </div>
-                        <button type="submit" className="w-full bg-accent hover:bg-accent/80 text-white font-bold py-3 rounded-md transition-colors">
+                        <button type="submit" className="w-full bg-christmas-red hover:bg-christmas-red/80 text-white font-bold py-3 rounded-md transition-colors">
                             Award Certificate
                         </button>
                     </form>
@@ -238,7 +238,7 @@ const ManageCertificates: React.FC = () => {
                                 <div key={index} className="bg-secondary p-4 rounded-md">
                                     <div className="flex justify-between items-start mb-2">
                                         <p className="font-bold text-white">{cert.teamName}</p>
-                                        <span className="text-xs font-semibold px-2 py-1 rounded bg-accent/30 text-accent">{cert.type}</span>
+                                        <span className="text-xs font-semibold px-2 py-1 rounded bg-frozen-ice/30 text-frozen-ice">{cert.type}</span>
                                     </div>
                                     <p className="text-xs text-dark-text">Awarded: {cert.awardedAt.toLocaleDateString()}</p>
                                 </div>

@@ -71,13 +71,13 @@ const LeaderboardPage: React.FC = () => {
                     <div className="flex flex-col sm:flex-row justify-center items-center gap-4 mb-8">
                         {/* Round Filters */}
                         <div className="bg-secondary p-2 rounded-full flex">
-                            <button onClick={() => setActiveRound('Round 1')} className={`px-6 py-2 rounded-full font-semibold transition-colors ${activeRound === 'Round 1' ? 'bg-accent text-white' : 'text-dark-text'}`}>
+                            <button onClick={() => setActiveRound('Round 1')} className={`px-6 py-2 rounded-full font-semibold transition-colors ${activeRound === 'Round 1' ? 'bg-frozen-ice text-white' : 'text-dark-text'}`}>
                                 Round 1
                             </button>
                             <button 
                                 onClick={() => setActiveRound('Round 2')} 
                                 disabled={round2?.status !== 'Active' && round2?.status !== 'Finished'}
-                                className={`px-6 py-2 rounded-full font-semibold transition-colors ${activeRound === 'Round 2' ? 'bg-accent text-white' : (round2?.status === 'Active' || round2?.status === 'Finished') ? 'text-dark-text cursor-pointer hover:bg-accent/20' : 'text-dark-text/50 cursor-not-allowed'}`}
+                                className={`px-6 py-2 rounded-full font-semibold transition-colors ${activeRound === 'Round 2' ? 'bg-frozen-ice text-white' : (round2?.status === 'Active' || round2?.status === 'Finished') ? 'text-dark-text cursor-pointer hover:bg-frozen-ice/20' : 'text-dark-text/50 cursor-not-allowed'}`}
                             >
                                 Round 2
                             </button>
@@ -90,7 +90,7 @@ const LeaderboardPage: React.FC = () => {
                              <select
                                 value={collegeFilter}
                                 onChange={e => setCollegeFilter(e.target.value)}
-                                className="bg-secondary text-dark-text font-semibold rounded-full py-3 pl-6 pr-10 appearance-none focus:outline-none focus:ring-2 focus:ring-accent cursor-pointer"
+                                className="bg-secondary text-dark-text font-semibold rounded-full py-3 pl-6 pr-10 appearance-none focus:outline-none focus:ring-2 focus:ring-frozen-ice cursor-pointer"
                                 aria-label="Filter by college"
                             >
                                 <option value="">All Colleges</option>
@@ -116,11 +116,11 @@ const LeaderboardPage: React.FC = () => {
                             </thead>
                             <tbody className="divide-y divide-primary">
                                 {leaderboardData.length > 0 ? leaderboardData.map((team, index) => (
-                                    <tr key={team.teamId} className={`transition-colors ${index < 3 ? 'bg-accent/20' : 'hover:bg-accent/10'}`}>
+                                    <tr key={team.teamId} className={`transition-colors ${index < 3 ? 'bg-frozen-ice/20' : 'hover:bg-frozen-ice/10'}`}>
                                         <td className="px-6 py-4 whitespace-nowrap text-lg font-bold">{team.rank}</td>
                                         <td className="px-6 py-4 whitespace-nowrap font-medium text-white">{team.teamName}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-dark-text">{team.college}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-accent font-semibold">{typeof team.score === 'number' ? team.score.toFixed(2) : '—'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-frozen-ice font-semibold">{typeof team.score === 'number' ? team.score.toFixed(2) : '—'}</td>
                                     </tr>
                                 )) : (
                                     <tr>

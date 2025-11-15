@@ -25,14 +25,14 @@ const Navbar: React.FC = () => {
     };
 
     const linkClasses = "px-3 py-2 rounded-md text-sm font-medium transition-colors";
-    const activeLinkClasses = "bg-accent text-white";
+    const activeLinkClasses = "bg-highlight text-white";
     const inactiveLinkClasses = "text-dark-text/80 hover:bg-secondary hover:text-white";
     
     const AuthButtons: React.FC<{ isMobile?: boolean }> = ({ isMobile = false }) => {
         if (user) {
             return (
                 <div className={`flex items-center space-x-4 ${isMobile ? 'justify-between w-full' : ''}`}>
-                    <RouterNavLink to="/dashboard" className="bg-highlight hover:bg-highlight/80 text-white font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105">
+                    <RouterNavLink to="/dashboard" className="bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105">
                         Dashboard
                     </RouterNavLink>
                     <button onClick={handleLogout} className="text-dark-text/80 hover:text-white font-medium">
@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
                 <RouterNavLink to="/login" className="px-4 py-2 rounded-md text-sm font-medium text-dark-text/80 hover:bg-secondary hover:text-white transition-colors">
                     Login
                 </RouterNavLink>
-                <RouterNavLink to="/signup" className="bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105">
+                <RouterNavLink to="/signup" className="bg-highlight hover:bg-highlight/80 text-white font-bold py-2 px-4 rounded-full transition-transform transform hover:scale-105">
                     Sign Up
                 </RouterNavLink>
                 {/* theme toggle removed - dark mode only */}
@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
     };
 
     return (
-        <nav className="bg-primary/80 backdrop-blur-sm sticky top-0 z-50 shadow-lg shadow-black/20">
+        <nav className="bg-gradient-to-r from-primary via-secondary to-primary/90 backdrop-blur-sm sticky top-0 z-50 shadow-lg shadow-black/20 border-b border-highlight/20">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">

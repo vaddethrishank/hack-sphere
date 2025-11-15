@@ -74,12 +74,13 @@ const ManageMCQs: React.FC = () => {
             alert('Problem title and description are required.');
             return;
         }
+        // cast to any so we can pass test cases through to the context implementation
         addCodingProblem({ 
             title: newProblemTitle, 
             description: newProblemDesc,
             displayedTestCases: displayedTestCases.filter(tc => tc.input.trim() && tc.expectedOutput.trim()),
             hiddenTestCases: hiddenTestCases.filter(tc => tc.input.trim() && tc.expectedOutput.trim()),
-        });
+        } as any);
         setNewProblemTitle('');
         setNewProblemDesc('');
         setDisplayedTestCases([{ input: '', expectedOutput: '' }]);
@@ -95,15 +96,15 @@ const ManageMCQs: React.FC = () => {
                     <div className="bg-primary p-6 rounded-lg">
                         <h3 className="text-xl font-semibold text-white mb-4">Add New MCQ</h3>
                         <form onSubmit={handleAddMcq} className="space-y-4">
-                            <textarea value={newMcqQuestion} onChange={e => setNewMcqQuestion(e.target.value)} placeholder="Question Text" required className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent" />
+                            <textarea value={newMcqQuestion} onChange={e => setNewMcqQuestion(e.target.value)} placeholder="Question Text" required className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-christmas-red focus:border-christmas-red" />
                             {newMcqOptions.map((opt, index) => (
                                 <div key={opt.id} className="flex items-center gap-2">
                                     <input type="radio" name="correctAnswer" value={opt.id} checked={correctAnswerId === opt.id} onChange={(e) => setCorrectAnswerId(e.target.value)} />
-                                    <input type="text" value={opt.text} onChange={e => handleOptionTextChange(opt.id, e.target.value)} placeholder={`Option ${opt.id.toUpperCase()}`} required className="flex-grow bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent" />
+                                    <input type="text" value={opt.text} onChange={e => handleOptionTextChange(opt.id, e.target.value)} placeholder={`Option ${opt.id.toUpperCase()}`} required className="flex-grow bg-secondary p-2 rounded-md border-transparent focus:ring-christmas-red focus:border-christmas-red" />
                                 </div>
                             ))}
-                             <button type="button" onClick={handleAddOption} disabled={newMcqOptions.length >= 4} className="text-sm text-accent hover:text-highlight disabled:opacity-50">+ Add Option</button>
-                            <button type="submit" className="w-full bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded">Add MCQ</button>
+                             <button type="button" onClick={handleAddOption} disabled={newMcqOptions.length >= 4} className="text-sm text-frozen-ice hover:text-christmas-green disabled:opacity-50">+ Add Option</button>
+                            <button type="submit" className="w-full bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-2 px-4 rounded">Add MCQ</button>
                         </form>
                     </div>
                      <div className="bg-primary p-6 rounded-lg">
@@ -119,8 +120,8 @@ const ManageMCQs: React.FC = () => {
                     <div className="bg-primary p-6 rounded-lg">
                         <h3 className="text-xl font-semibold text-white mb-4">Add New Coding Problem</h3>
                         <form onSubmit={handleAddCodingProblem} className="space-y-4">
-                             <input type="text" value={newProblemTitle} onChange={e => setNewProblemTitle(e.target.value)} placeholder="Problem Title" required className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent" />
-                            <textarea value={newProblemDesc} onChange={e => setNewProblemDesc(e.target.value)} placeholder="Problem Description" required rows={4} className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent" />
+                                 <input type="text" value={newProblemTitle} onChange={e => setNewProblemTitle(e.target.value)} placeholder="Problem Title" required className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-christmas-red focus:border-christmas-red" />
+                                <textarea value={newProblemDesc} onChange={e => setNewProblemDesc(e.target.value)} placeholder="Problem Description" required rows={4} className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-christmas-red focus:border-christmas-red" />
                             
                             {/* Displayed Test Cases */}
                             <div className="mt-6 pt-4 border-t border-secondary">
@@ -132,14 +133,14 @@ const ManageMCQs: React.FC = () => {
                                             value={tc.input} 
                                             onChange={e => handleUpdateDisplayedTestCase(index, 'input', e.target.value)} 
                                             placeholder="Input" 
-                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent text-sm"
+                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-christmas-red focus:border-christmas-red text-sm"
                                         />
                                         <input 
                                             type="text" 
                                             value={tc.expectedOutput} 
                                             onChange={e => handleUpdateDisplayedTestCase(index, 'expectedOutput', e.target.value)} 
                                             placeholder="Expected Output" 
-                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent text-sm"
+                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-christmas-red focus:border-christmas-red text-sm"
                                         />
                                         {displayedTestCases.length > 1 && (
                                             <button 
@@ -155,7 +156,7 @@ const ManageMCQs: React.FC = () => {
                                 <button 
                                     type="button" 
                                     onClick={handleAddDisplayedTestCase} 
-                                    className="text-sm text-accent hover:text-highlight"
+                                    className="text-sm text-christmas-red hover:text-christmas-green"
                                 >
                                     + Add Displayed Test Case
                                 </button>
@@ -171,14 +172,14 @@ const ManageMCQs: React.FC = () => {
                                             value={tc.input} 
                                             onChange={e => handleUpdateHiddenTestCase(index, 'input', e.target.value)} 
                                             placeholder="Input" 
-                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent text-sm"
+                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-christmas-red focus:border-christmas-red text-sm"
                                         />
                                         <input 
                                             type="text" 
                                             value={tc.expectedOutput} 
                                             onChange={e => handleUpdateHiddenTestCase(index, 'expectedOutput', e.target.value)} 
                                             placeholder="Expected Output" 
-                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-accent focus:border-accent text-sm"
+                                            className="w-full bg-secondary p-2 rounded-md border-transparent focus:ring-christmas-red focus:border-christmas-red text-sm"
                                         />
                                         {hiddenTestCases.length > 1 && (
                                             <button 
@@ -194,13 +195,13 @@ const ManageMCQs: React.FC = () => {
                                 <button 
                                     type="button" 
                                     onClick={handleAddHiddenTestCase} 
-                                    className="text-sm text-accent hover:text-highlight"
+                                    className="text-sm text-christmas-red hover:text-christmas-green"
                                 >
                                     + Add Hidden Test Case
                                 </button>
                             </div>
 
-                            <button type="submit" className="w-full bg-accent hover:bg-accent/80 text-white font-bold py-2 px-4 rounded">Add Coding Problem</button>
+                            <button type="submit" className="w-full bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-2 px-4 rounded">Add Coding Problem</button>
                         </form>
                     </div>
                     <div className="bg-primary p-6 rounded-lg">

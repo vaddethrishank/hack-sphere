@@ -3,7 +3,7 @@ import { NavLink as RouterNavLink } from 'react-router-dom';
 
 const AdminSidebar: React.FC = () => {
     const linkClasses = "flex items-center px-4 py-3 text-dark-text/80 rounded-lg hover:bg-secondary hover:text-white transition-colors";
-    const activeLinkClasses = "bg-accent text-white";
+    const activeLinkClasses = "bg-frozen-ice text-white";
 
     const links = [
         { path: '/admin', name: 'Overview', exact: true },
@@ -21,7 +21,7 @@ const AdminSidebar: React.FC = () => {
                  <RouterNavLink to="/" className="text-white font-bold text-xl">
                     HACKATHON '26
                  </RouterNavLink>
-                <p className="text-sm text-accent">Admin Panel</p>
+                <p className="text-sm text-frozen-ice">Admin Panel</p>
             </div>
             <nav className="space-y-2">
                 {links.map(link => (
@@ -37,7 +37,7 @@ const AdminSidebar: React.FC = () => {
                 ))}
             </nav>
             <div className="mt-auto pt-4 border-t border-secondary">
-                 <RouterNavLink to="/" className="text-sm text-dark-text/60 hover:text-accent transition-colors">
+                          <RouterNavLink to="/" className="text-sm text-dark-text/60 hover:text-frozen-ice transition-colors">
                     &larr; Back to Main Site
                  </RouterNavLink>
             </div>

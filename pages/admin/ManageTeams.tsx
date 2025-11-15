@@ -97,7 +97,7 @@ const TeamCard: React.FC<{ team: Team }> = ({ team }) => {
                      <span className={`px-3 py-1 text-xs font-semibold rounded-full ${getStatusClasses(team.status)}`}>
                         {team.status}
                     </span>
-                    <span className="text-sm font-medium text-accent">{team.members.length} Members</span>
+                    <span className="text-sm font-medium text-frozen-ice">{team.members.length} Members</span>
                 </div>
             </summary>
             <div className="bg-secondary p-6 border-t border-primary">
@@ -109,7 +109,7 @@ const TeamCard: React.FC<{ team: Team }> = ({ team }) => {
                                 <p className="font-medium text-dark-text">{member.name}</p>
                                 <p className="text-gray-400">{member.email}</p>
                             </div>
-                            <span className={`px-2 py-1 text-xs rounded-full ${member.role === 'Leader' ? 'bg-highlight/20 text-highlight' : 'bg-accent/20 text-accent'}`}>
+                            <span className={`px-2 py-1 text-xs rounded-full ${member.role === 'Leader' ? 'bg-christmas-green/20 text-christmas-green' : 'bg-frozen-ice/20 text-frozen-ice'}`}>
                                 {member.role}
                             </span>
                         </li>
@@ -173,10 +173,10 @@ const ManageTeams: React.FC = () => {
     const FilterButton: React.FC<{ status: FilterStatus }> = ({ status }) => (
         <button
             onClick={() => setFilter(status)}
-            className={`px-4 py-2 rounded-full font-semibold transition-colors text-sm ${
-                filter === status
-                    ? 'bg-accent text-white'
-                    : 'bg-primary text-dark-text hover:bg-secondary'
+        className={`px-4 py-2 rounded-full font-semibold transition-colors text-sm ${
+            filter === status
+                ? 'bg-christmas-red text-white'
+                : 'bg-primary text-dark-text hover:bg-secondary'
             }`}
         >
             {status} ({getCount(status)})
@@ -187,7 +187,7 @@ const ManageTeams: React.FC = () => {
         <div className="animate-fade-in-up">
             <h1 className="text-4xl font-bold text-white mb-4">Manage Teams</h1>
             
-            <div className="flex items-center gap-2 mb-8 p-2 bg-secondary rounded-full w-fit">
+                <div className="flex items-center gap-2 mb-8 p-2 bg-secondary rounded-full w-fit">
                 <FilterButton status="Pending" />
                 <FilterButton status="Approved" />
                 <FilterButton status="Rejected" />

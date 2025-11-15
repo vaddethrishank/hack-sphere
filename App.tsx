@@ -2,6 +2,7 @@ import React from 'react';
 import { HashRouter, Routes, Route, Outlet } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import GlobalChristmasOverlay from './components/GlobalChristmasOverlay';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import RoundsPage from './pages/RoundsPage';
@@ -59,6 +60,8 @@ const App: React.FC = () => {
     <ThemeProvider>
       <AuthProvider>
         <ContestProvider>
+          {/* Global Christmas Overlay - visible on all pages */}
+          <GlobalChristmasOverlay />
           <HashRouter>
               <Routes>
                   {/* Public and Auth Routes */}

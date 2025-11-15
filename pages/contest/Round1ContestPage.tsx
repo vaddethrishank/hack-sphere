@@ -391,8 +391,8 @@ const Round1ContestPage: React.FC = () => {
                  )}
                  {!viewAll && allQuestions.length > 0 && (
                     <div className="flex justify-between items-center mt-4">
-                        <button onClick={() => setCurrentQuestionIndex(p => p - 1)} disabled={currentQuestionIndex === 0} className="bg-accent hover:bg-accent/80 text-white font-bold py-2 px-6 rounded disabled:opacity-50">Previous</button>
-                        <button onClick={() => setCurrentQuestionIndex(p => p + 1)} disabled={currentQuestionIndex === allQuestions.length - 1} className="bg-accent hover:bg-accent/80 text-white font-bold py-2 px-6 rounded disabled:opacity-50">Next</button>
+                        <button onClick={() => setCurrentQuestionIndex(p => p - 1)} disabled={currentQuestionIndex === 0} className="bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-2 px-6 rounded disabled:opacity-50">Previous</button>
+                        <button onClick={() => setCurrentQuestionIndex(p => p + 1)} disabled={currentQuestionIndex === allQuestions.length - 1} className="bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-2 px-6 rounded disabled:opacity-50">Next</button>
                     </div>
                  )}
             </div>
@@ -405,13 +405,13 @@ const Round1ContestPage: React.FC = () => {
                  <div className="bg-secondary p-4 rounded-lg">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-lg font-semibold text-white">Questions</h3>
-                         <button onClick={() => setViewAll(v => !v)} className="text-xs bg-primary hover:bg-accent/50 p-2 rounded">{viewAll ? 'Single View' : 'View All'}</button>
+                    <button onClick={() => setViewAll(v => !v)} className="text-xs bg-primary hover:bg-frozen-ice/50 p-2 rounded">{viewAll ? 'Single View' : 'View All'}</button>
                     </div>
                     <div className="grid grid-cols-5 gap-2">
                         {allQuestions.map((q, index) => (
                             <a key={q.id} href={viewAll ? `#q-${index}` : undefined} onClick={() => !viewAll && setCurrentQuestionIndex(index)}
                                 className={`flex items-center justify-center h-10 w-10 rounded font-bold text-sm cursor-pointer transition-colors ${
-                                    index === currentQuestionIndex && !viewAll ? 'bg-accent text-white ring-2 ring-white' :
+                                    index === currentQuestionIndex && !viewAll ? 'bg-frozen-ice text-white ring-2 ring-white' :
                                     isQuestionAnswered(q) ? 'bg-green-600 hover:bg-green-700' :
                                     'bg-primary hover:bg-secondary/50'
                                 }`}
@@ -421,7 +421,7 @@ const Round1ContestPage: React.FC = () => {
                         ))}
                     </div>
                 </div>
-                <button onClick={() => window.confirm('Are you sure you want to finish and submit the test?') && handleSubmit()} className="w-full bg-highlight hover:bg-highlight/80 text-white font-bold py-3 px-8 rounded-lg text-lg">
+                <button onClick={() => window.confirm('Are you sure you want to finish and submit the test?') && handleSubmit()} className="w-full bg-christmas-green hover:bg-christmas-green/80 text-white font-bold py-3 px-8 rounded-lg text-lg">
                     Finish & Submit Test
                 </button>
             </aside>

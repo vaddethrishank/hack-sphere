@@ -77,7 +77,7 @@ const TeamDashboardPage: React.FC = () => {
                      <p className="mt-4 text-dark-text">You haven't formed a team yet. Register your team to kickstart your Hackathon 2026 journey.</p>
                      <NavLink 
                          to="/registration" 
-                         className="mt-8 inline-block bg-accent hover:bg-accent/80 text-white font-bold py-3 px-6 rounded-full transition-colors transform hover:scale-105"
+                        className="mt-8 inline-block bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-3 px-6 rounded-full transition-colors transform hover:scale-105"
                      >
                          Register Your Team
                      </NavLink>
@@ -243,7 +243,7 @@ const TeamDashboardPage: React.FC = () => {
 
                                 // Qualified teams: show only the Round 2 link (no inline badge)
                                 return (
-                                    <NavLink to="/contest/round2" className="flex-1 text-center font-bold py-3 px-6 rounded-lg bg-highlight hover:bg-highlight/80 text-white hover:scale-105">
+                                    <NavLink to="/contest/round2" className="flex-1 text-center font-bold py-3 px-6 rounded-lg bg-christmas-green hover:bg-christmas-green/80 text-white hover:scale-105">
                                         Go to Round 2 Submission
                                     </NavLink>
                                 );
