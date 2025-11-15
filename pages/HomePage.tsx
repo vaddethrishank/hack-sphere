@@ -112,11 +112,11 @@ const timelineEvents = [
 ];
 
 const sponsors = [
-  { name: "Google", logo: "/assets/google.jpeg" },
-  { name: "Amazon", logo: "/assets/amazon.webp" },
-  { name: "Microsoft", logo: "/assets/microsoft.jpeg" },
-  { name: "Tata", logo: "/assets/tata.jpeg" },
-  { name: "CocaCola", logo: "/assets/cocacola.jpeg" },
+  { name: "Google", logo: "/google.jpeg" },
+  { name: "Amazon", logo: "/amazon.webp" },
+  { name: "Microsoft", logo: "/microsoft.jpeg" },
+  { name: "Tata", logo: "/tata.jpeg" },
+  { name: "CocaCola", logo: "/cocacola.jpeg" },
 ];
 
 const NEXT_EVENT_DATE = new Date("Jan 13, 2026 10:00:00").getTime();
@@ -169,7 +169,7 @@ const HomePage: React.FC = () => {
       <div className="relative min-h-[88vh] flex items-center overflow-hidden">
         <div className="absolute inset-0 topo-overlay z-10 pointer-events-none"></div>
 
-        <div className="absolute inset-0 hero-bg z-0" style={{ backgroundImage: "url('/assets/nit_silchar.jpg')" }} />
+        <div className="absolute inset-0 hero-bg z-0" style={{ backgroundImage: "url('/nit_silchar.jpg')" }} />
         <div className="absolute inset-0 bg-black/70 z-5" />
 
         <div className="relative z-10 container mx-auto px-6 md:px-12 py-16">
