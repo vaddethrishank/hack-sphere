@@ -92,7 +92,7 @@ const ScrollTimeline: React.FC<ScrollTimelineProps> = ({ events, title = 'Timeli
               ref={(el) => {
                 eventRefs.current[index] = el;
               }}
-              className={`relative flex items-start gap-8 md:gap-12 transition-all duration-700 ${
+              className={`relative flex items-start gap-2 md:gap-4 transition-all duration-700 ${
                 visibleIndices.has(index)
                   ? 'opacity-100 translate-y-0'
                   : 'opacity-0 translate-y-8'
@@ -101,7 +101,7 @@ const ScrollTimeline: React.FC<ScrollTimelineProps> = ({ events, title = 'Timeli
               {/* Left Content (odd indices) */}
               {index % 2 === 0 ? (
                 <>
-                  <div className="w-full md:w-5/12 text-right md:pr-8">
+                  <div className="w-full md:w-6/12 text-right md:pr-4">
                     <div
                       className={`p-6 rounded-lg bg-secondary/80 border border-accent/30 backdrop-blur-sm transition-all duration-700 ${
                         visibleIndices.has(index)
@@ -129,12 +129,12 @@ const ScrollTimeline: React.FC<ScrollTimelineProps> = ({ events, title = 'Timeli
                   </div>
 
                   {/* Right Spacer */}
-                  <div className="hidden md:block w-5/12" />
+                  <div className="hidden md:block w-6/12" />
                 </>
               ) : (
                 <>
                   {/* Left Spacer */}
-                  <div className="hidden md:block w-5/12" />
+                  <div className="hidden md:block w-6/12" />
 
                   {/* Center Dot */}
                   <div className="absolute left-1/2 top-8 w-5 h-5 transform -translate-x-1/2">
@@ -146,7 +146,7 @@ const ScrollTimeline: React.FC<ScrollTimelineProps> = ({ events, title = 'Timeli
                   </div>
 
                   {/* Right Content */}
-                  <div className="w-full md:w-5/12 md:pl-8">
+                  <div className="w-full md:w-6/12 md:pl-4">
                     <div
                       className={`p-6 rounded-lg bg-secondary/80 border border-frozen-ice/30 backdrop-blur-sm transition-all duration-700 ${
                         visibleIndices.has(index)
