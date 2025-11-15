@@ -78,9 +78,9 @@ const ScrollTimeline: React.FC<ScrollTimelineProps> = ({ events, title = 'Timeli
 
       {/* Timeline Container */}
       <div ref={timelineRef} className="relative max-w-4xl mx-auto">
-        {/* Vertical Line Background (use frozen-ice blue) */}
+        {/* Vertical Line Background (use frozen-ice blue) - on mobile, positioned closer to left */}
         <div
-          className="absolute left-1/2 top-0 w-1 bg-gradient-to-b from-frozen-ice via-frozen-ice/70 to-frozen-ice/50 transform -translate-x-1/2 origin-top transition-all duration-700"
+          className="absolute left-4 md:left-1/2 top-0 w-1 bg-gradient-to-b from-frozen-ice via-frozen-ice/70 to-frozen-ice/50 transform md:-translate-x-1/2 origin-top transition-all duration-700"
           style={{ height: `${lineHeight}px` }}
         />
 
@@ -98,73 +98,104 @@ const ScrollTimeline: React.FC<ScrollTimelineProps> = ({ events, title = 'Timeli
                   : 'opacity-0 translate-y-8'
               }`}
             >
-              {/* Left Content (odd indices) */}
-              {index % 2 === 0 ? (
-                <>
-                  <div className="w-full md:w-6/12 text-right md:pr-4">
-                    <div
-                      className={`p-6 rounded-lg bg-secondary/80 border border-accent/30 backdrop-blur-sm transition-all duration-700 ${
-                        visibleIndices.has(index)
-                          ? 'border-accent shadow-lg shadow-accent/20'
-                          : 'border-secondary/50'
-                      }`}
-                    >
-                      <p className="text-sm font-semibold text-accent mb-2">{event.date}</p>
-                      <h3 className="text-lg md:text-xl font-bold text-white mb-2">
-                        {event.title}
-                      </h3>
-                      <p className="text-sm md:text-base text-dark-text/80">
-                        {event.description}
-                      </p>
+              {/* Mobile Layout - All events on right side */}
+              <div className="md:hidden w-full ml-8">
+                {/* Mobile Dot */}
+                <div className="absolute left-0 top-8 w-5 h-5 transform -translate-x-1/2">
+                  <div
+                    className={`w-full h-full rounded-full border-2 border-frozen-ice bg-primary transition-all duration-700 ${
+                      visibleIndices.has(index) ? 'scale-100 shadow-lg shadow-frozen-ice' : 'scale-0'
+                    }`}
+                  />
+                </div>
+
+                {/* Mobile Content */}
+                <div
+                  className={`p-4 rounded-lg bg-secondary/80 border border-frozen-ice/30 backdrop-blur-sm transition-all duration-700 ${
+                    visibleIndices.has(index)
+                      ? 'border-frozen-ice shadow-lg shadow-frozen-ice/20'
+                      : 'border-secondary/50'
+                  }`}
+                >
+                  <p className="text-xs font-semibold text-frozen-ice mb-2">{event.date}</p>
+                  <h3 className="text-base font-bold text-white mb-2">
+                    {event.title}
+                  </h3>
+                  <p className="text-xs text-dark-text/80">
+                    {event.description}
+                  </p>
+                </div>
+              </div>
+
+              {/* Desktop Layout - Alternating left and right */}
+              <div className="hidden md:contents">
+                {index % 2 === 0 ? (
+                  <>
+                    <div className="w-6/12 text-right pr-4">
+                      <div
+                        className={`p-6 rounded-lg bg-secondary/80 border border-accent/30 backdrop-blur-sm transition-all duration-700 ${
+                          visibleIndices.has(index)
+                            ? 'border-accent shadow-lg shadow-accent/20'
+                            : 'border-secondary/50'
+                        }`}
+                      >
+                        <p className="text-sm font-semibold text-accent mb-2">{event.date}</p>
+                        <h3 className="text-lg md:text-xl font-bold text-white mb-2">
+                          {event.title}
+                        </h3>
+                        <p className="text-sm md:text-base text-dark-text/80">
+                          {event.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
 
-                  {/* Center Dot */}
-                  <div className="absolute left-1/2 top-8 w-5 h-5 transform -translate-x-1/2">
-                    <div
-                      className={`w-full h-full rounded-full border-2 border-accent bg-primary transition-all duration-700 ${
-                        visibleIndices.has(index) ? 'scale-100 shadow-lg shadow-accent' : 'scale-0'
-                      }`}
-                    />
-                  </div>
+                    {/* Center Dot */}
+                    <div className="absolute left-1/2 top-8 w-5 h-5 transform -translate-x-1/2">
+                      <div
+                        className={`w-full h-full rounded-full border-2 border-accent bg-primary transition-all duration-700 ${
+                          visibleIndices.has(index) ? 'scale-100 shadow-lg shadow-accent' : 'scale-0'
+                        }`}
+                      />
+                    </div>
 
-                  {/* Right Spacer */}
-                  <div className="hidden md:block w-6/12" />
-                </>
-              ) : (
-                <>
-                  {/* Left Spacer */}
-                  <div className="hidden md:block w-6/12" />
+                    {/* Right Spacer */}
+                    <div className="w-6/12" />
+                  </>
+                ) : (
+                  <>
+                    {/* Left Spacer */}
+                    <div className="w-6/12" />
 
-                  {/* Center Dot */}
-                  <div className="absolute left-1/2 top-8 w-5 h-5 transform -translate-x-1/2">
-                    <div
-                      className={`w-full h-full rounded-full border-2 border-frozen-ice bg-primary transition-all duration-700 ${
-                        visibleIndices.has(index) ? 'scale-100 shadow-lg shadow-frozen-ice' : 'scale-0'
-                      }`}
-                    />
-                  </div>
+                    {/* Center Dot */}
+                    <div className="absolute left-1/2 top-8 w-5 h-5 transform -translate-x-1/2">
+                      <div
+                        className={`w-full h-full rounded-full border-2 border-frozen-ice bg-primary transition-all duration-700 ${
+                          visibleIndices.has(index) ? 'scale-100 shadow-lg shadow-frozen-ice' : 'scale-0'
+                        }`}
+                      />
+                    </div>
 
-                  {/* Right Content */}
-                  <div className="w-full md:w-6/12 md:pl-4">
-                    <div
-                      className={`p-6 rounded-lg bg-secondary/80 border border-frozen-ice/30 backdrop-blur-sm transition-all duration-700 ${
-                        visibleIndices.has(index)
-                          ? 'border-frozen-ice shadow-lg shadow-frozen-ice/20'
-                          : 'border-secondary/50'
-                      }`}
-                    >
+                    {/* Right Content */}
+                    <div className="w-6/12 pl-4">
+                      <div
+                        className={`p-6 rounded-lg bg-secondary/80 border border-frozen-ice/30 backdrop-blur-sm transition-all duration-700 ${
+                          visibleIndices.has(index)
+                            ? 'border-frozen-ice shadow-lg shadow-frozen-ice/20'
+                            : 'border-secondary/50'
+                        }`}
+                      >
                         <p className="text-sm font-semibold text-frozen-ice mb-2">{event.date}</p>
-                      <h3 className="text-lg md:text-xl font-bold text-white mb-2">
-                        {event.title}
-                      </h3>
-                      <p className="text-sm md:text-base text-dark-text/80">
-                        {event.description}
-                      </p>
+                        <h3 className="text-lg md:text-xl font-bold text-white mb-2">
+                          {event.title}
+                        </h3>
+                        <p className="text-sm md:text-base text-dark-text/80">
+                          {event.description}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </>
-              )}
+                  </>
+                )}
+              </div>
             </div>
           ))}
         </div>

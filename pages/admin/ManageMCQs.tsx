@@ -146,7 +146,7 @@ const ManageMCQs: React.FC = () => {
                                             <button 
                                                 type="button" 
                                                 onClick={() => handleRemoveDisplayedTestCase(index)} 
-                                                className="text-xs text-red-400 hover:text-red-300"
+                                                className="text-xs text-christmas-red hover:text-accent transition-colors"
                                             >
                                                 Remove Test Case
                                             </button>
@@ -185,7 +185,7 @@ const ManageMCQs: React.FC = () => {
                                             <button 
                                                 type="button" 
                                                 onClick={() => handleRemoveHiddenTestCase(index)} 
-                                                className="text-xs text-red-400 hover:text-red-300"
+                                                className="text-xs text-christmas-red hover:text-accent transition-colors"
                                             >
                                                 Remove Test Case
                                             </button>

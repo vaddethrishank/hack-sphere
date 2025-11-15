@@ -32,7 +32,7 @@ const ViewSubmission: React.FC = () => {
         return (
             <div key={mcq.id} className="p-4 bg-secondary rounded-lg">
                 <p className="font-semibold text-dark-text mb-2">{mcq.question}</p>
-                <p className={`text-sm ${isCorrect ? 'text-green-400' : 'text-red-400'}`}>
+                <p className={`text-sm ${isCorrect ? 'text-christmas-green' : 'text-christmas-red'}`}>
                     Your Answer: <span className="font-mono p-1 bg-primary rounded">{userAnswerText}</span>
                 </p>
                 {!isCorrect && (

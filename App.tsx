@@ -7,6 +7,8 @@ import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import RoundsPage from './pages/RoundsPage';
 import PrizesPage from './pages/PrizesPage';
+import ProblemSetsPage from './pages/ProblemSetsPage';
+import EventCountdownPage from './pages/EventCountdownPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ContactPage from './pages/ContactPage';
@@ -70,6 +72,8 @@ const App: React.FC = () => {
                       <Route path="about" element={<AboutPage />} />
                       <Route path="rounds" element={<RoundsPage />} />
                       <Route path="prizes" element={<PrizesPage />} />
+                      <Route path="set1" element={<ProblemSetsPage />} />
+                      <Route path="guidelines" element={<EventCountdownPage />} />
                       <Route path="leaderboard" element={<LeaderboardPage />} />
                       <Route path="contact" element={<ContactPage />} />
                       <Route path="faqs" element={<FAQPage />} />

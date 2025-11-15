@@ -57,7 +57,7 @@ const ManageProblems: React.FC = () => {
                         <button type="submit" className="bg-frozen-ice hover:bg-frozen-ice/80 text-white font-bold py-2 px-6 rounded-md transition-colors">
                             Save & Publish
                         </button>
-                        {successMessage && <p className="text-green-400 text-sm">{successMessage}</p>}
+                        {successMessage && <p className="text-christmas-green text-sm">{successMessage}</p>}
                     </div>
                 </form>
             </div>

@@ -98,6 +98,7 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import Section from "../components/Section";
 import ScrollTimeline from "../components/ScrollTimeline";
+import MerryChristmasBanner from "../components/MerryChristmasBanner";
 import VanillaTilt from "vanilla-tilt";
 import "./HomePage.extra.css";
 import { Calendar, Info, Brain, MapPin } from "lucide-react";
@@ -163,6 +164,9 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="animate-fade-in-up relative">
+      {/* Merry Christmas Banner */}
+      <MerryChristmasBanner />
+      
       {/* Global Christmas Background is rendered in App.tsx */}
       
       {/* HERO BLOCK */}
@@ -246,10 +250,18 @@ const HomePage: React.FC = () => {
                     link: "https://www.google.com/maps/place/National+Institute+of+Technology,+Silchar/@24.7567525,92.7944166,17z"
                   },
                 ].map((c, idx) => (
-                  <div
+                  <NavLink
                     key={idx}
+                    to={c.external ? "#" : c.link}
+                    target={c.external ? "_blank" : undefined}
+                    rel={c.external ? "noopener noreferrer" : undefined}
+                    onClick={(e) => {
+                      if (c.external) {
+                        e.preventDefault();
+                        window.open(c.link, "_blank");
+                      }
+                    }}
                     className="tilt-wrapper rounded-xl cursor-pointer"
-                    onClick={() => c.external ? window.open(c.link, "_blank") : (window.location.href = c.link)}
                   >
                     <div className="tilt-card-inner card-glass rounded-xl p-5 hover:scale-[1.02] transition">
                       <div className="flex items-start justify-between">
@@ -268,7 +280,7 @@ const HomePage: React.FC = () => {
                         {c.title === "Venue" && "Get directions"}
                       </div>
                     </div>
-                  </div>
+                  </NavLink>
                 ))}
 
               </div>

@@ -64,7 +64,7 @@ const TeamCard: React.FC<{ team: Team }> = ({ team }) => {
                             <img src={imageUrl} alt="Payment Screenshot" className="max-w-full max-h-[90vh] rounded-lg" />
                             <button 
                                 onClick={() => setShowModal(false)}
-                                className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 text-white rounded-full w-8 h-8 flex items-center justify-center"
+                                className="absolute top-2 right-2 bg-christmas-red hover:bg-accent text-white rounded-full w-8 h-8 flex items-center justify-center transition-colors"
                             >
                                 ✕
                             </button>
@@ -78,11 +78,11 @@ const TeamCard: React.FC<{ team: Team }> = ({ team }) => {
     const getStatusClasses = (status: Team['status']) => {
         switch (status) {
             case 'Approved':
-                return 'bg-green-600/20 text-green-400';
+                return 'bg-christmas-green/20 text-christmas-green';
             case 'Pending':
                 return 'bg-yellow-600/20 text-yellow-400';
             case 'Rejected':
-                return 'bg-red-600/20 text-red-400';
+                return 'bg-christmas-red/20 text-christmas-red';
         }
     };
     
@@ -128,13 +128,13 @@ const TeamCard: React.FC<{ team: Team }> = ({ team }) => {
                         <div className="flex gap-2">
                             <button
                                 onClick={() => approveTeam(team.id)}
-                                className="bg-green-600 hover:bg-green-700 text-white font-bold py-1 px-3 rounded text-sm transition-colors"
+                                className="bg-christmas-green hover:bg-christmas-green/80 text-white font-bold py-1 px-3 rounded text-sm transition-colors"
                             >
                                 Approve
                             </button>
                              <button
                                 onClick={() => rejectTeam(team.id)}
-                                className="bg-red-600 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-sm transition-colors"
+                                className="bg-christmas-red hover:bg-accent text-white font-bold py-1 px-3 rounded text-sm transition-colors"
                             >
                                 Reject
                             </button>
