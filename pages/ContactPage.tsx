@@ -30,7 +30,7 @@ const ContactPage: React.FC = () => {
                                 <input
   type="hidden"
   name="access_key"
-  value="71b8679b-c6a1-46fd-be34-058efd3a3732"
+  value={(import.meta as any).env.VITE_WEB3FORMS_KEY}
 />
 
                                 <input type="hidden" name="subject" value="New Contact Message" />

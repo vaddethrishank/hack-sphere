@@ -15,6 +15,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { UserRole } from './types';
 import { ContestProvider } from './contexts/ContestContext';
+import FAQPage from './pages/FAQPage';
 
 // Auth Pages
 import LoginPage from './pages/LoginPage';
@@ -68,6 +69,7 @@ const App: React.FC = () => {
                       <Route path="prizes" element={<PrizesPage />} />
                       <Route path="leaderboard" element={<LeaderboardPage />} />
                       <Route path="contact" element={<ContactPage />} />
+                      <Route path="faqs" element={<FAQPage />} />
                       <Route path="login" element={<LoginPage />} />
                       <Route path="signup" element={<SignupPage />} />
                       <Route path="unauthorized" element={<UnauthorizedPage />} />

@@ -18,7 +18,7 @@ const AboutPage: React.FC = () => {
 
             <Section title="About NIT Silchar" className="bg-secondary/30">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
-                    <img src="https://picsum.photos/seed/nits/600/400" alt="NIT Silchar Campus" className="rounded-lg shadow-lg" />
+                    <img src='/assets/nits.jpg' alt="NIT Silchar Campus" className="rounded-lg shadow-lg" />
                     <div className="text-dark-text">
                         <p className="text-lg mb-4">
                             National Institute of Technology, Silchar is one of the 31 NITs of India and was established in 1967 as a Regional Engineering College in Silchar. In 2002, it was upgraded to the status of National Institute of Technology and was declared as Institute of National Importance under the National Institutes of Technology Act, 2007.

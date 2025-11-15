@@ -9,34 +9,51 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': '#0D0D2B',
-                        'secondary': '#25284B',
-                        'accent': '#3671E9',
-                        'highlight': '#EB4A94',
-                        'light': '#F8F9FA',
-                        'dark-text': '#E0E0E0',
+        darkMode: 'class',
+        theme: {
+            extend: {
+                colors: {
+                    'primary': '#000000',
+                    'secondary': '#25284B',
+                    'accent': '#b200b2',
+                    'highlight': '#EB4A94',
+                    'light': '#F8F9FA',
+                    'dark-text': '#E0E0E0',
+                },
+                animation: {
+                    'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
+                    'glow': 'glow 2s ease-in-out infinite alternate',
+                    'underline': 'underline 0.8s ease forwards',
+                    'floaty': 'floaty 4s ease-in-out infinite',
+                },
+                keyframes: {
+                    fadeInUp: {
+                        '0%': { opacity: '0', transform: 'translateY(20px)' },
+                        '100%': { opacity: '1', transform: 'translateY(0)' },
                     },
-                    animation: {
-                        'fade-in-up': 'fadeInUp 0.5s ease-out forwards',
-                        'glow': 'glow 2s ease-in-out infinite alternate'
-                    },
-                    keyframes: {
-                        fadeInUp: {
-                            '0%': { opacity: '0', transform: 'translateY(20px)' },
-                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                    glow: {
+                        from: {
+                            textShadow:
+                                '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #3671E9, 0 0 20px #3671E9',
                         },
-                        glow: {
-                            'from': { textShadow: '0 0 5px #fff, 0 0 10px #fff, 0 0 15px #3671E9, 0 0 20px #3671E9' },
-                            'to': { textShadow: '0 0 10px #fff, 0 0 15px #fff, 0 0 20px #EB4A94, 0 0 25px #EB4A94' }
-                        }
-                    }
-                }
-            }
-        }
+                        to: {
+                            textShadow:
+                                '0 0 10px #fff, 0 0 15px #fff, 0 0 20px #EB4A94, 0 0 25px #EB4A94',
+                        },
+                    },
+                    underline: {
+                        '0%': { width: '0%' },
+                        '100%': { width: '100%' },
+                    },
+                    floaty: {
+                        '0%': { transform: 'translateY(0px)' },
+                        '50%': { transform: 'translateY(-6px)' },
+                        '100%': { transform: 'translateY(0px)' },
+                    },
+                },
+            },
+        },
+    }
     </script>
 <script type="importmap">
 {

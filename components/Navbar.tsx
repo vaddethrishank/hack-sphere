@@ -12,6 +12,7 @@ const navLinks: NavLink[] = [
     { name: 'Prizes', path: '/prizes' },
     { name: 'Leaderboard', path: '/leaderboard' },
     { name: 'Contact', path: '/contact' },
+    { name: 'FAQs', path: '/faqs' },
 ];
 
 const Navbar: React.FC = () => {
@@ -61,7 +62,7 @@ const Navbar: React.FC = () => {
                 <div className="flex items-center justify-between h-16">
                     <div className="flex items-center">
                         <RouterNavLink to="/" className="text-white font-bold text-xl flex items-center">
-                            <span className="text-accent text-2xl animate-glow">H</span>ACKATHON '26
+                            <span className="split-H">H</span>ACK <span className="split">S</span>PHERE '26
                         </RouterNavLink>
                     </div>
                     <div className="hidden md:block">

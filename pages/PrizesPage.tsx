@@ -1,14 +1,14 @@
-
 import React from 'react';
 import Section from '../components/Section';
 import { Prize } from '../types';
 
 const prizes: Prize[] = [
-    { rank: '1st Place', amount: '₹2,50,000', perks: ['Internship interviews', 'Premium Goodies', '₹50,000 Cloud Credits'] },
-    { rank: '2nd Place', amount: '₹1,50,000', perks: ['Internship interviews', 'Goodies', '₹25,000 Cloud Credits'] },
-    { rank: '3rd Place', amount: '₹1,00,000', perks: ['Internship interviews', 'Goodies', '₹10,000 Cloud Credits'] },
-    { rank: 'Best All-Girls Team', amount: '₹25,000', perks: ['Special Mention', 'Mentorship Sessions'] },
-    { rank: 'Best First-Year Team', amount: '₹15,000', perks: ['Special Mention', 'Mentorship Sessions'] },
+    { rank: '1st Place', amount: '₹50,000', perks: ['Certificate of Achievement', 'Goodies',] },
+    { rank: '2nd Place', amount: '₹40,000', perks: ['Certificate of Achievement', 'Goodies', ] },
+    { rank: '3rd Place', amount: '₹30,000', perks: ['Certificate of Achievement', 'Goodies',] },
+    { rank: 'Final-Teams', amount: 'Free Accomodation', perks: ['Special Mention', 'Academic Interaction','Gala Dinner'] },
+    {rank:'Participants',amount:'Certificates',perks:['Performance based Certification',]}
+    
 ];
 
 const PrizeCard: React.FC<{ prize: Prize, isWinner?: boolean }> = ({ prize, isWinner = false }) => (
